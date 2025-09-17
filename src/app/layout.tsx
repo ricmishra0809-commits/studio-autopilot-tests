@@ -15,8 +15,8 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: 'Firebase AutoPilot',
-  description: 'AI-powered software testing automation for Firebase projects.',
+  title: 'Studio AutoPilot',
+  description: 'AI-powered software testing automation for your projects.',
 };
 
 export default function RootLayout({

@@ -103,7 +103,7 @@ export function AppSidebar() {
         <Link href="/" className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
           <span className="font-bold text-lg font-headline group-data-[collapsible=icon]:hidden">
-            Firebase AutoPilot
+            Studio AutoPilot
           </span>
         </Link>
       </SidebarHeader>
@@ -162,7 +162,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="p-4 mt-auto">
         <div className="text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-          © {new Date().getFullYear()} Firebase AutoPilot
+          © {new Date().getFullYear()} Studio AutoPilot
         </div>
       </SidebarFooter>
     </Sidebar>
