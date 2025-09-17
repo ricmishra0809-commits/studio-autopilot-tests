@@ -1,113 +1,178 @@
+
 export const n8nWorkflowJson = `{
+  "name": "Studio AutoPilot CI/CD Pipeline",
   "nodes": [
     {
-      "parameters": {},
-      "name": "Start",
-      "type": "n8n-nodes-base.start",
-      "typeVersion": 1,
-      "position": [ 250, 300 ]
+      "parameters": {
+        "path": "a1b2c3d4e5",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        -180,
+        320
+      ],
+      "webhookId": "a1b2c3d4-e5f6-7890-1234-abcdef123456"
     },
     {
       "parameters": {
-        "command": "firebase emulators:exec \\"npm run test:all\\""
+        "command": "firebase emulators:exec \\"npm run test:all\\"",
+        "options": {
+          "continueOnFail": true
+        }
       },
-      "name": "Run Tests",
+      "id": "2",
+      "name": "Run All Tests",
       "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [ 450, 300 ]
-    },
-    {
-      "parameters": {
-        "model": "openai-gpt-4",
-        "prompt": "Summarize the following test results: {{ $json.stdout }}"
-      },
-      "name": "Summarize Results",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1,
-      "position": [ 650, 300 ]
-    },
-    {
-      "parameters": {
-        "text": "Test Summary: {{ $json.summary }}"
-      },
-      "name": "Notify Team",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 1,
-      "position": [ 850, 300 ]
+      "typeVersion": 2,
+      "position": [
+        40,
+        320
+      ]
     },
     {
       "parameters": {
         "conditions": {
-          "boolean": [
+          "number": [
             {
-              "value1": "{{ $json.exitCode }}",
+              "value1": "{{$json.exitCode}}",
               "operation": "equal",
               "value2": 0
             }
           ]
-        }
+        },
+        "options": {}
       },
-      "name": "If Tests Passed",
+      "id": "3",
+      "name": "Did Tests Pass?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [ 1050, 300 ]
+      "position": [
+        260,
+        320
+      ]
     },
     {
       "parameters": {
-        "command": "firebase deploy --only hosting"
+        "authentication": "openApi",
+        "nodeUrl": "https://openrouter.ai/api/v1",
+        "model": "google/gemini-flash-1.5",
+        "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise. Test output:\\n\\n{{$json[\\"stdout\\"]}}\\n\\n{{$json[\\"stderr\\"]}}",
+        "options": {}
       },
+      "id": "4",
+      "name": "Summarize Failure with AI",
+      "type": "n8n-nodes-base.openAiChat",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        500
+      ],
+      "credentials": {
+        "openApi": {
+          "id": "YOUR_OPENROUTER_CREDENTIALS_ID",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "firebase deploy --only hosting --token YOUR_FIREBASE_TOKEN",
+        "options": {}
+      },
+      "id": "5",
       "name": "Deploy to Firebase",
       "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [ 1250, 200 ]
+      "typeVersion": 2,
+      "position": [
+        500,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "text": "✅ CI run passed! Deploying new version to production.",
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "✅ *CI Run Passed!*\\nDeploying new version to production."
+            }
+          }
+        ]
+      },
+      "id": "6",
+      "name": "Notify Success on Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 3,
+      "position": [
+        720,
+        180
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_SLACK_CREDENTIALS_ID",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "❌ CI run failed! Reason: {{$json.choices[0].message.content}}",
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "❌ *CI Run Failed!*\\n*AI Summary:* {{$json.choices[0].message.content}}"
+            }
+          }
+        ]
+      },
+      "id": "7",
+      "name": "Notify Failure on Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 3,
+      "position": [
+        720,
+        500
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "YOUR_SLACK_CREDENTIALS_ID",
+          "name": "Slack account"
+        }
+      }
     }
   ],
   "connections": {
-    "Start": {
+    "Webhook": {
       "main": [
         [
           {
-            "node": "Run Tests",
+            "node": "Run All Tests",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Run Tests": {
+    "Run All Tests": {
       "main": [
         [
           {
-            "node": "Summarize Results",
+            "node": "Did Tests Pass?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Summarize Results": {
-      "main": [
-        [
-          {
-            "node": "Notify Team",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Notify Team": {
-      "main": [
-        [
-          {
-            "node": "If Tests Passed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Tests Passed": {
+    "Did Tests Pass?": {
       "main": [
         [
           {
@@ -116,11 +181,53 @@ export const n8nWorkflowJson = `{
             "index": 0
           }
         ],
-        []
+        [
+          {
+            "node": "Summarize Failure with AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Failure with AI": {
+      "main": [
+        [
+          {
+            "node": "Notify Failure on Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deploy to Firebase": {
+      "main": [
+        [
+          {
+            "node": "Notify Success on Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
-  }
-}`;
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "1.0",
+  "triggerCount": 1,
+  "tags": [
+    "firebase",
+    "ci/cd",
+    "ai",
+    "automation"
+  ]
+}
+`;
 
 export const githubActionsYaml = `name: Firebase CI/CD
 
@@ -285,3 +392,5 @@ runAIAgent(appUrl, testUrl, testTask);
 
 This script can be added to your project and executed in a CI/CD job using \`node your-script-name.js\`.`,
 };
+
+    
