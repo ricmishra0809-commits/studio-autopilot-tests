@@ -23,19 +23,23 @@ import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bot } from 'lucide-react';
 import type { ExploreAndTestAppOutput } from '@/ai/flows/explore-and-test-app';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const formSchema = z.object({
   url: z.string().url({ message: 'Please enter a valid URL.' }),
   task: z.string().min(10, {
     message: 'Task description must be at least 10 characters.',
   }),
+  device: z.string().optional(),
 });
 
 type AiAgentFormProps = {
   runAgent: (data: z.infer<typeof formSchema>) => Promise<ExploreAndTestAppOutput>;
+  supportedDevices: string[];
 };
 
-export function AIAgentForm({ runAgent }: AiAgentFormProps) {
+export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   const [result, setResult] = useState<ExploreAndTestAppOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,6 +48,7 @@ export function AIAgentForm({ runAgent }: AiAgentFormProps) {
     defaultValues: {
       url: 'https://www.google.com',
       task: 'Search for "Firebase Studio" and take a screenshot of the results.',
+      device: '',
     },
   });
 
@@ -71,22 +76,53 @@ export function AIAgentForm({ runAgent }: AiAgentFormProps) {
         <CardContent className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg">Application URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://yourapp.com" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      The starting URL for the AI agent to begin its exploration.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FormField
+                  control={form.control}
+                  name="url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg">Application URL</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://yourapp.com" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        The starting URL for the AI agent to begin its exploration.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                 <FormField
+                  control={form.control}
+                  name="device"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-lg">Device Emulation</FormLabel>
+                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a device to emulate" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <ScrollArea className="h-72">
+                            <SelectItem value="">Default (Desktop)</SelectItem>
+                            {supportedDevices.map(device => (
+                              <SelectItem key={device} value={device}>{device}</SelectItem>
+                            ))}
+                          </ScrollArea>
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Test how your app looks and behaves on different devices.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="task"

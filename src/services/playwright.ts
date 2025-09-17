@@ -1,18 +1,24 @@
 'use server';
 
-import { chromium } from 'playwright';
+import { chromium, devices } from 'playwright';
 
 class PlaywrightService {
   private static instance: PlaywrightService;
   private browser: any;
   private context: any;
   private page: any;
+  private device: string | undefined;
 
-  private constructor() {}
+  private constructor(device?: string) {
+    this.device = device;
+  }
 
-  public static async getInstance(): Promise<PlaywrightService> {
-    if (!PlaywrightService.instance) {
-      PlaywrightService.instance = new PlaywrightService();
+  public static async getInstance(device?: string): Promise<PlaywrightService> {
+    if (!PlaywrightService.instance || PlaywrightService.instance.device !== device) {
+      if (PlaywrightService.instance) {
+        await PlaywrightService.instance.close();
+      }
+      PlaywrightService.instance = new PlaywrightService(device);
       await PlaywrightService.instance.initialize();
     }
     return PlaywrightService.instance;
@@ -20,7 +26,11 @@ class PlaywrightService {
 
   private async initialize() {
     this.browser = await chromium.launch({ headless: true });
-    this.context = await this.browser.newContext();
+    if (this.device && devices[this.device]) {
+        this.context = await this.browser.newContext({ ...devices[this.device] });
+    } else {
+        this.context = await this.browser.newContext();
+    }
     this.page = await this.context.newPage();
   }
 
@@ -79,8 +89,11 @@ class PlaywrightService {
     if (this.browser) {
       await this.browser.close();
     }
-    PlaywrightService.instance = null!;
+    // @ts-ignore
+    PlaywrightService.instance = null;
   }
 }
 
-export const playwrightService = await PlaywrightService.getInstance();
+// We cannot initialize a singleton instance here anymore because device is a parameter.
+// The flow will be responsible for getting the instance.
+export { PlaywrightService };

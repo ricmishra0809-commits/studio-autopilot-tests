@@ -1,12 +1,15 @@
 'use server';
 import { AIAgentForm } from './_components/ai-agent-form';
 import { exploreAndTestApp } from '@/ai/flows/explore-and-test-app';
+import { devices } from 'playwright';
 
 export default async function AiAgentPage() {
-  async function runAgent(data: { url: string; task: string }) {
+  async function runAgent(data: { url: string; task: string, device?: string }) {
     'use server';
     return await exploreAndTestApp(data);
   }
 
-  return <AIAgentForm runAgent={runAgent} />;
+  const deviceNames = Object.keys(devices);
+
+  return <AIAgentForm runAgent={runAgent} supportedDevices={deviceNames} />;
 }
