@@ -138,7 +138,7 @@ export function AppSidebar() {
                 <SidebarMenuSub>
                     {section.links.map((link) => (
                       <SidebarMenuSubItem key={link.href}>
-                        <Link
+                         <Link
                           href={link.href}
                           className={cn(
                             sidebarMenuSubButtonVariants({ size: 'md' }),
