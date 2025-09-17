@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { TypewriterEffect } from '@/components/shared/typewriter-effect';
 
 const features = [
   {
@@ -85,9 +86,11 @@ export default function LandingPage() {
         <section className="relative text-center py-20 md:py-32">
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]"></div>
           <div className="container relative z-10">
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 animated-gradient-text">
-              Automate Your Testing. Ship Faster.
-            </h1>
+            <TypewriterEffect 
+              text="Automate Your Testing. Ship Faster."
+              className="text-4xl md:text-6xl font-bold tracking-tighter mb-4"
+              cursorClassName="text-4xl md:text-6xl"
+            />
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
               Studio AutoPilot is an AI-powered copilot that writes, runs, and
               manages your tests, so you can focus on building what matters.

@@ -101,6 +101,10 @@
     linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
     background-size: 40px 40px;
   }
+
+  .blinking-cursor {
+    animation: blink 1s step-end infinite;
+  }
 }
 
 @keyframes gradient-text {
@@ -112,5 +116,14 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes blink {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: hsl(var(--primary));
   }
 }
