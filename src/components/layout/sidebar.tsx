@@ -55,7 +55,7 @@ export const navItems: NavSection[] = [
     title: 'Overview',
     icon: <LayoutDashboard className="h-4 w-4" />,
     links: [
-      { href: '/', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
+      { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
       { href: '/workflow', label: 'Workflow', icon: <Workflow className="h-4 w-4" /> },
     ],
   },
@@ -85,7 +85,7 @@ export const navItems: NavSection[] = [
     links: [
       { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
       { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4" /> },
-      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4 w-4" /> },
+      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4" /> },
       { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
     ],
   },
@@ -101,7 +101,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="hidden md:flex md:flex-col bg-sidebar text-sidebar-foreground">
       <SidebarHeader className="p-4">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
           <span className="font-bold text-lg font-headline group-data-[collapsible=icon]:hidden">
             Studio AutoPilot

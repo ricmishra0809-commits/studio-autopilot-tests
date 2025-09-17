@@ -1,98 +1,169 @@
 import Link from 'next/link';
 import {
-  ArrowRight,
-  FileText,
-  FileCode2,
+  CheckCircle,
+  Zap,
+  TestTube,
+  Rocket,
   ShieldCheck,
-  ClipboardCheck,
-  Video,
   Bot,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 const features = [
   {
-    title: 'Test Strategy',
-    description: 'Generate a comprehensive test strategy for your project.',
-    href: '/test-strategy',
-    icon: <FileText className="w-6 h-6 text-foreground/80" />,
+    icon: <Zap className="w-8 h-8 text-primary" />,
+    title: 'AI-Powered Test Generation',
+    description:
+      'Automatically generate unit, integration, and E2E tests from your project specifications, saving you hundreds of hours.',
   },
   {
-    title: 'Test Scripts',
-    description: 'Automatically create Jest, Playwright, and other test scripts.',
-    href: '/test-scripts',
-    icon: <FileCode2 className="w-6 h-6 text-foreground/80" />,
+    icon: <Bot className="w-8 h-8 text-primary" />,
+    title: 'Autonomous AI Test Agent',
+    description:
+      'Deploy an AI agent that explores your app, finds bugs, and records video of its session, just like a real user.',
   },
   {
-    title: 'Security Rules',
-    description: 'Get AI-powered suggestions to improve your security.',
-    href: '/security-rules',
-    icon: <ShieldCheck className="w-6 h-6 text-foreground/80" />,
+    icon: <Rocket className="w-8 h-8 text-primary" />,
+    title: 'Automated CI/CD Pipeline',
+    description:
+      "Integrate with your repository to run tests and deploy to production automatically on every code push. It's truly hands-free.",
   },
   {
-    title: 'Summarize CI',
-    description: 'Paste raw CI logs to get a clean, AI-generated summary.',
-    href: '/summarize-ci',
-    icon: <ClipboardCheck className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'AI Test Agent',
-    description: 'Let an AI agent explore your app and find bugs automatically.',
-    href: '/ai-agent',
-    icon: <Bot className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Test Video Gen',
-    description: 'Generate a video clip of a test scenario using AI.',
-    href: '/test-video',
-    icon: <Video className="w-6 h-6 text-foreground/80" />,
+    icon: <ShieldCheck className="w-8 h-8 text-primary" />,
+    title: 'Security Rule Auditing',
+    description:
+      'Let our AI analyze your Firestore security rules, find vulnerabilities, and suggest improvements to keep your data safe.',
   },
 ];
 
-export default function Home() {
-  return (
-    <div className="space-y-12">
-      <div className="flex flex-col items-center text-center py-16">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 animated-gradient-text">
-          Studio AutoPilot
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl">
-          Your AI-powered copilot for comprehensive, automated testing.
-        </p>
-      </div>
+const steps = [
+  {
+    name: 'Plan & Generate',
+    description: 'AI generates your test strategy and scripts.',
+  },
+  {
+    name: 'Execute Tests',
+    description: 'Tests are automatically run in a CI/CD pipeline.',
+  },
+  {
+    name: 'Deploy',
+    description: 'On success, your app is deployed to production.',
+  },
+];
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => (
-          <Card key={feature.href} className="group relative flex flex-col overflow-hidden bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5">
-            <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-br from-white/5 to-transparent transition-all duration-300 group-hover:from-white/10" />
-            <CardHeader className="relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
-                  {feature.icon}
-                </div>
-                <CardTitle className="text-lg font-headline">{feature.title}</CardTitle>
+export default function LandingPage() {
+  return (
+    <div className="bg-background text-foreground">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+          <Link href="/" className="flex items-center gap-2">
+            <Rocket className="w-7 h-7 text-primary" />
+            <span className="font-bold text-xl font-headline">
+              Studio AutoPilot
+            </span>
+          </Link>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" asChild>
+              <Link href="/dashboard">Login</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/dashboard">Get Started Free</Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="pt-16">
+        {/* Hero Section */}
+        <section className="relative text-center py-20 md:py-32">
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]"></div>
+          <div className="container relative z-10">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 animated-gradient-text">
+              Automate Your Testing. Ship Faster.
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              Studio AutoPilot is an AI-powered copilot that writes, runs, and
+              manages your tests, so you can focus on building what matters.
+            </p>
+            <Button size="lg" asChild>
+              <Link href="/dashboard">
+                <Zap className="mr-2" /> Start Automating Now
+              </Link>
+            </Button>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-16 md:py-24 bg-background">
+          <div className="container">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-headline">
+              A Testing Suite That Thinks for You
+            </h2>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+              {features.map((feature, index) => (
+                <Card
+                  key={index}
+                  className="group relative flex flex-col overflow-hidden bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5"
+                >
+                   <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-br from-white/5 to-transparent transition-all duration-300 group-hover:from-white/10" />
+                  <CardHeader className="relative z-10 flex flex-row items-center gap-4">
+                    <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+                      {feature.icon}
+                    </div>
+                    <CardTitle className="text-lg font-headline">
+                      {feature.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="relative z-10">
+                    <p className="text-muted-foreground">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How it Works Section */}
+        <section className="py-16 md:py-24">
+          <div className="container">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-headline">
+              3 Simple Steps to Full Automation
+            </h2>
+            <div className="relative">
+              {/* The connecting line */}
+              <div className="hidden md:block absolute top-8 left-0 w-full h-0.5 bg-border -translate-y-1/2"></div>
+
+              <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                {steps.map((step, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div className="flex items-center justify-center w-16 h-16 rounded-full bg-primary text-primary-foreground border-4 border-background mb-4 font-bold text-xl z-10">
+                      {index + 1}
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">{step.name}</h3>
+                    <p className="text-muted-foreground">{step.description}</p>
+                  </div>
+                ))}
               </div>
-            </CardHeader>
-            <CardContent className="relative z-10 flex-grow flex flex-col">
-              <CardDescription className="flex-grow">{feature.description}</CardDescription>
-              <div className="mt-6">
-                <Button asChild variant="ghost" className="w-full justify-start p-0 h-auto text-sm font-normal text-muted-foreground hover:text-foreground transition-colors hover:bg-transparent">
-                  <Link href={feature.href}>
-                    Go to page <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t py-8">
+        <div className="container text-center text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} Studio AutoPilot. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

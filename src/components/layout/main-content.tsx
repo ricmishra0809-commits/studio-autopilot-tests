@@ -8,8 +8,14 @@ import { navItems } from './sidebar';
 
 export function MainContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const currentNavItem = navItems.flatMap(item => item.links).find(link => link.href === pathname);
-  const pageTitle = currentNavItem ? currentNavItem.label : 'Dashboard';
+  
+  const getPageTitle = () => {
+    if (pathname === '/dashboard') return 'Dashboard';
+    const currentNavItem = navItems.flatMap(item => item.links).find(link => link.href === pathname);
+    return currentNavItem ? currentNavItem.label : '';
+  }
+
+  const pageTitle = getPageTitle();
 
   return (
     <SidebarInset className="w-full">
@@ -17,7 +23,9 @@ export function MainContent({ children }: { children: React.ReactNode }) {
         <SidebarTrigger className="md:hidden" />
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-semibold md:text-xl font-headline">
-            <span className="text-muted-foreground">AutoPilot /</span> {pageTitle}
+            {pageTitle && <>
+                <span className="text-muted-foreground">AutoPilot /</span> {pageTitle}
+            </>}
           </h1>
         </div>
       </header>
