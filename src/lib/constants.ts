@@ -212,4 +212,3 @@ export const docsContent = {
     - Common issues include an invalid or expired \`FIREBASE_TOKEN\`, or incorrect Firebase project configuration in \`.firebaserc\`.
     - To debug locally, try running \`firebase deploy --only hosting\` from your machine.`,
 };
-`;
