@@ -6,6 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  GithubAuthProvider,
+  signInWithPopup,
   type User,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -15,6 +17,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (email: string, pass: string) => Promise<any>;
+  loginWithGitHub: () => Promise<any>;
   signup: (email: string, pass: string) => Promise<any>;
   logout: () => Promise<any>;
 };
@@ -23,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   login: async () => {},
+  loginWithGitHub: async () => {},
   signup: async () => {},
   logout: async () => {},
 });
@@ -48,6 +52,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return signInWithEmailAndPassword(auth, email, pass);
   };
 
+  const loginWithGitHub = () => {
+    const provider = new GithubAuthProvider();
+    return signInWithPopup(auth, provider);
+  };
+
   const logout = () => {
     return signOut(auth);
   };
@@ -57,6 +66,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading,
     signup,
     login,
+    loginWithGitHub,
     logout,
   };
 
