@@ -7,6 +7,7 @@ import {
   ClipboardCheck,
   Video,
   Bot,
+  Workflow,
 } from 'lucide-react';
 import {
   Card,
@@ -18,6 +19,12 @@ import {
 import { Button } from '@/components/ui/button';
 
 const features = [
+   {
+    title: 'Workflow',
+    description: 'Understand the entire automated testing and deployment pipeline.',
+    href: '/workflow',
+    icon: <Workflow className="w-6 h-6 text-foreground/80" />,
+  },
   {
     title: 'Test Strategy',
     description: 'Generate a comprehensive test strategy for your project.',

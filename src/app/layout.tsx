@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { AppShellWrapper } from '@/components/layout/app-shell-wrapper';
 import { Inter, Lexend } from 'next/font/google';
+import { AuthProvider } from '@/context/auth-context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -35,8 +36,10 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AppShellWrapper>{children}</AppShellWrapper>
-        <Toaster />
+        <AuthProvider>
+          <AppShellWrapper>{children}</AppShellWrapper>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -71,10 +71,10 @@ export default function LandingPage() {
           </Link>
           <div className="flex items-center gap-4">
             <Button variant="ghost" asChild>
-              <Link href="/dashboard">Login</Link>
+              <Link href="/login">Login</Link>
             </Button>
             <Button asChild>
-              <Link href="/dashboard">Get Started Free</Link>
+              <Link href="/signup">Get Started Free</Link>
             </Button>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function LandingPage() {
               manages your tests, so you can focus on building what matters.
             </p>
             <Button size="lg" asChild>
-              <Link href="/dashboard">
+              <Link href="/signup">
                 <Zap className="mr-2" /> Start Automating Now
               </Link>
             </Button>

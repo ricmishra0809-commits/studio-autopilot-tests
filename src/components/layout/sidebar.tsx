@@ -17,6 +17,7 @@ import {
   Bot,
   Terminal,
   Video,
+  LogOut,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -36,6 +37,8 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import React from 'react';
+import { useAuth } from '@/context/auth-context';
+import { Button } from '../ui/button';
 
 type NavLink = {
   href: string;
@@ -93,6 +96,7 @@ export const navItems: NavSection[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { logout } = useAuth();
 
   const isLinkActive = (href: string) => {
     return pathname === href;
@@ -145,9 +149,10 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 mt-auto">
-        <div className="text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
-          © {new Date().getFullYear()} Studio AutoPilot
-        </div>
+        <Button variant="ghost" onClick={logout} className="w-full justify-start group-data-[collapsible=icon]:justify-center">
+            <LogOut className="h-4 w-4" />
+            <span className="group-data-[collapsible=icon]:hidden ml-2">Logout</span>
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
