@@ -16,6 +16,7 @@ import {
   ChevronDown,
   ChevronRight,
   Bot,
+  Terminal,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -72,6 +73,7 @@ export const navItems: NavSection[] = [
     links: [
       { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
       { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4 w-4" /> },
+      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4 w-4" /> },
       { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
     ],
   },

@@ -1,0 +1,69 @@
+import { PageHeader } from '@/components/shared/page-header';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { cicdIntegrationContent } from '@/lib/constants';
+import { CodeBlock } from '@/components/shared/code-block';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
+
+const renderContent = (content: string) => {
+    return content.split('```').map((part, index) => {
+      if (index % 2 === 1) {
+        const [lang, ...code] = part.split('\n');
+        return <CodeBlock key={index} code={code.join('\n')} language={lang} className="my-4" />;
+      }
+      return part.split('\n').map((line, lineIndex) => {
+        if (line.startsWith('### ')) {
+          return <h3 key={`${index}-${lineIndex}`} className="text-xl font-semibold mt-6 mb-2">{line.substring(4)}</h3>
+        }
+        if (line.trim() === '') return null;
+        return <p key={`${index}-${lineIndex}`} className="mb-2 text-muted-foreground">{line}</p>
+      });
+    });
+  }
+
+export default function CiCdIntegrationPage() {
+  return (
+    <div>
+      <PageHeader
+        title="CI/CD Integration"
+        description="Learn how to trigger the AI Test Agent from a script or command line, enabling full automation in your CI/CD pipeline."
+      />
+      <div className="space-y-8">
+        <Alert>
+          <Terminal className="h-4 w-4" />
+          <AlertTitle>Heads up, developer!</AlertTitle>
+          <AlertDescription>
+            Integrating with CI/CD requires calling the underlying Next.js Server Action via an HTTP POST request. The examples below show you how to do this.
+          </AlertDescription>
+        </Alert>
+
+        <Card>
+           <CardHeader>
+            <CardTitle>Introduction</CardTitle>
+          </CardHeader>
+          <CardContent className="text-muted-foreground">
+            {cicdIntegrationContent.intro}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            {renderContent(cicdIntegrationContent.curl)}
+          </CardContent>
+        </Card>
+
+         <Card>
+          <CardContent className="pt-6">
+            {renderContent(cicdIntegrationContent.node)}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

@@ -9,6 +9,7 @@ import {
   Sparkles,
   Rocket,
   Bot,
+  Terminal,
 } from 'lucide-react';
 import {
   Card,
@@ -45,10 +46,10 @@ const features = [
     icon: <Github className="w-8 h-8 text-primary" />,
   },
   {
-    title: 'Documentation',
-    description: 'Access setup instructions and a runbook for your project.',
-    href: '/docs',
-    icon: <BookOpenText className="w-8 h-8 text-primary" />,
+    title: 'CI/CD Integration',
+    description: 'Learn how to trigger the AI agent from your CI/CD pipeline.',
+    href: '/cicd-integration',
+    icon: <Terminal className="w-8 h-8 text-primary" />,
   },
   {
     title: 'AI Test Agent',
