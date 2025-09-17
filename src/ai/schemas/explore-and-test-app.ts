@@ -29,5 +29,3 @@ export const ExploreAndTestAppOutputSchema = z.object({
 export type ExploreAndTestAppOutput = z.infer<
   typeof ExploreAndTestAppOutputSchema
 >;
-
-    
