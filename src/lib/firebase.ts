@@ -1,16 +1,14 @@
-// @ts-nocheck
-// It's not possible to use type checking on this file as the firebaseConfig object is being created by a GenAI model.
-// TODO: Replace with your own Firebase configuration snippet
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "TODO",
-  authDomain: "TODO",
-  projectId: "TODO",
-  storageBucket: "TODO",
-  messagingSenderId: "TODO",
-  appId: "TODO"
+  "projectId": "studio-8483198719-4c8fb",
+  "appId": "1:638530350784:web:a4d2fe8ee32b54fc80c725",
+  "storageBucket": "studio-8483198719-4c8fb.firebasestorage.app",
+  "apiKey": "AIzaSyB9zXxFJHqCUzTvQPICP0gGkKkB9rlxvqk",
+  "authDomain": "studio-8483198719-4c8fb.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "638530350784"
 };
 
 // Initialize Firebase
