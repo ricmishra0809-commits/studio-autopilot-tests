@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -32,7 +31,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   sidebarMenuButtonVariants,
-  SidebarMenuSubButton,
+  sidebarMenuSubButtonVariants
 } from '@/components/ui/sidebar';
 import {
   Collapsible,
@@ -139,10 +138,8 @@ export function AppSidebar() {
                 <SidebarMenuSub>
                     {section.links.map((link) => (
                     <SidebarMenuSubItem key={link.href}>
-                        <Link href={link.href} asChild>
-                          <SidebarMenuSubButton isActive={isLinkActive(link.href)}>
+                        <Link href={link.href} className={cn(sidebarMenuSubButtonVariants({ size: 'md' }), 'w-full')} data-active={isLinkActive(link.href)}>
                             <span>{link.label}</span>
-                          </SidebarMenuSubButton>
                         </Link>
                     </SidebarMenuSubItem>
                     ))}

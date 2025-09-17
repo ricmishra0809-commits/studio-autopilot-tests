@@ -723,14 +723,16 @@ const sidebarMenuSubButtonVariants = cva(
 )
 
 const SidebarMenuSubButton = React.forwardRef<
-  HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
     size?: "sm" | "md"
-    isActive?: boolean
+    isActive?: boolean,
+    asChild?: boolean
   }
->(({ size, isActive, className, ...props }, ref) => {
+>(({ size, isActive, className, asChild, ...props }, ref) => {
+  const Comp = asChild ? Slot : "button"
   return (
-    <a
+    <Comp
       ref={ref}
       data-sidebar="menu-sub-button"
       data-size={size}
@@ -762,6 +764,7 @@ export {
   SidebarMenuSkeleton,
   SidebarMenuSub,
   SidebarMenuSubButton,
+  sidebarMenuSubButtonVariants,
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
