@@ -56,6 +56,7 @@ export const navItems: NavSection[] = [
     icon: <LayoutDashboard className="h-4 w-4" />,
     links: [
       { href: '/', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
+      { href: '/workflow', label: 'Workflow', icon: <Workflow className="h-4 w-4" /> },
     ],
   },
   {
@@ -83,7 +84,7 @@ export const navItems: NavSection[] = [
     icon: <Github className="h-4 w-4" />,
     links: [
       { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
-      { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4 w-4" /> },
+      { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4" /> },
       { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4 w-4" /> },
       { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
     ],
@@ -110,53 +111,36 @@ export function AppSidebar() {
       <SidebarContent className="p-2 pr-1">
         <SidebarMenu>
           {navItems.map((section) => (
-            section.title === 'Overview' ? (
-                <SidebarMenuItem key={section.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isLinkActive(section.links[0].href)}
-                    tooltip={{children: section.links[0].label}}
+            <Collapsible key={section.title} className="w-full" defaultOpen={section.defaultOpen || section.links.some(link => isLinkActive(link.href))}>
+                <CollapsibleTrigger asChild>
+                <div className='w-full'>
+                    <SidebarMenuButton 
+                    className="justify-between group-data-[collapsible=icon]:justify-center"
+                    tooltip={{children: section.title}}
                     variant='ghost'
-                  >
-                    <Link href={section.links[0].href}>
-                      {section.links[0].icon}
-                      <span className="group-data-[collapsible=icon]:hidden">{section.links[0].label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ) : (
-                <Collapsible key={section.title} className="w-full" defaultOpen={section.defaultOpen || section.links.some(link => isLinkActive(link.href))}>
-                  <CollapsibleTrigger asChild>
-                    <div className='w-full'>
-                      <SidebarMenuButton 
-                        className="justify-between group-data-[collapsible=icon]:justify-center"
-                        tooltip={{children: section.title}}
-                        variant='ghost'
-                        >
-                        <div className="flex items-center gap-2">
-                          {section.icon}
-                          <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
-                        </div>
-                        <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
-                      </SidebarMenuButton>
+                    >
+                    <div className="flex items-center gap-2">
+                        {section.icon}
+                        <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
                     </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
-                    <SidebarMenuSub>
-                      {section.links.map((link) => (
-                        <SidebarMenuSubItem key={link.href}>
-                          <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
-                            <Link href={link.href}>
-                              {/* {link.icon} */}
-                              <span>{link.label}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </Collapsible>
-              )
+                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
+                    </SidebarMenuButton>
+                </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
+                <SidebarMenuSub>
+                    {section.links.map((link) => (
+                    <SidebarMenuSubItem key={link.href}>
+                        <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
+                        <Link href={link.href}>
+                            <span>{link.label}</span>
+                        </Link>
+                        </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                    ))}
+                </SidebarMenuSub>
+                </CollapsibleContent>
+            </Collapsible>
           ))}
         </SidebarMenu>
       </SidebarContent>
