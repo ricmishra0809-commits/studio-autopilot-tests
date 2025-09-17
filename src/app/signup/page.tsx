@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
-import { Rocket, TriangleAlert } from 'lucide-react';
+import { Github, Rocket, TriangleAlert } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useAuth } from '@/context/auth-context';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
@@ -38,9 +39,10 @@ const formSchema = z.object({
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signup } = useAuth();
+  const { signup, loginWithGitHub } = useAuth();
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGitHubLoading, setIsGitHubLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,7 +64,20 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
-  
+
+  const handleGitHubLogin = async () => {
+    setError('');
+    setIsGitHubLoading(true);
+    try {
+      await loginWithGitHub();
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(getFirebaseErrorMessage(err.code));
+    } finally {
+      setIsGitHubLoading(false);
+    }
+  };
+
   // Helper to provide user-friendly error messages
   const getFirebaseErrorMessage = (errorCode: string) => {
     switch (errorCode) {
@@ -73,6 +88,8 @@ export default function SignupPage() {
         return 'The email address is not valid.';
       case 'auth/weak-password':
         return 'The password is too weak. Please use at least 6 characters.';
+      case 'auth/popup-closed-by-user':
+        return 'Signup process was cancelled. Please try again.';
       default:
         return 'An unexpected error occurred. Please try again.';
     }
@@ -92,51 +109,68 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              {error && (
-                <Alert variant="destructive">
-                  <TriangleAlert className="h-4 w-4" />
-                  <AlertTitle>Signup Failed</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <LoadingSpinner className="mr-2" /> : null}
-                Create Account
-              </Button>
-            </form>
-          </Form>
+           <div className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <TriangleAlert className="h-4 w-4" />
+                <AlertTitle>Signup Failed</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+             <Button variant="outline" className="w-full" onClick={handleGitHubLogin} disabled={isGitHubLoading || isLoading}>
+                {isGitHubLoading ? <LoadingSpinner className="mr-2" /> : <Github className="mr-2" />}
+                Continue with GitHub
+            </Button>
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                    Or continue with
+                    </span>
+                </div>
+            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="you@example.com"
+                          {...field}
+                          disabled={isLoading || isGitHubLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" placeholder="••••••••" {...field} disabled={isLoading || isGitHubLoading} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={isLoading || isGitHubLoading}>
+                  {isLoading ? <LoadingSpinner className="mr-2" /> : null}
+                  Create Account
+                </Button>
+              </form>
+            </Form>
+          </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{' '}
             <Link href="/login" className="underline">
