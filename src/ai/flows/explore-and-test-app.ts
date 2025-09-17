@@ -64,6 +64,53 @@ const fillInFieldTool = ai.defineTool(
   }
 );
 
+const assertElementTool = ai.defineTool(
+  {
+    name: 'assertElement',
+    description: 'Asserts that an element is visible on the page.',
+    inputSchema: z.object({
+      selector: z.string().describe('The CSS selector of the element to check.'),
+      justification: z.string().describe('Why you are asserting this element is visible.'),
+    }),
+    outputSchema: z.string(),
+  },
+  async ({ selector }) => {
+    const isVisible = await playwrightService.isVisible(selector);
+    return isVisible ? `Assertion successful: Element "${selector}" is visible.` : `Assertion failed: Element "${selector}" is not visible.`;
+  }
+);
+
+const scrollTool = ai.defineTool(
+  {
+    name: 'scrollPage',
+    description: 'Scrolls the page down to reveal more content.',
+    inputSchema: z.object({
+        direction: z.enum(['down', 'up']).describe('The direction to scroll.'),
+        justification: z.string().describe('Why you are scrolling.'),
+    }),
+    outputSchema: z.void(),
+  },
+  async ({ direction }) => {
+    await playwrightService.scroll(direction);
+  }
+);
+
+const pressKeyTool = ai.defineTool(
+    {
+        name: 'pressKey',
+        description: 'Presses a key on the keyboard, like "Enter".',
+        inputSchema: z.object({
+            key: z.string().describe('The key to press (e.g., "Enter", "Tab").'),
+            selector: z.string().optional().describe('The CSS selector of an element to focus before pressing the key.'),
+            justification: z.string().describe('Why you are pressing this key.'),
+        }),
+        outputSchema: z.void(),
+    },
+    async ({ key, selector }) => {
+        await playwrightService.pressKey(key, selector);
+    }
+);
+
 
 export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<ExploreAndTestAppOutput> {
     await playwrightService.goTo(input.url);
@@ -79,7 +126,7 @@ Analyze the screenshot and decide what action to take next to accomplish the tas
 Think step-by-step. What is the most logical next action?
 `;
 
-    for (let i = 0; i < 5; i++) { // Limit to 5 steps for now
+    for (let i = 0; i < 7; i++) { // Limit to 7 steps for now
         const screenshot = await playwrightService.getPageAsDataUri();
 
         const agentResponse = await ai.generate({
@@ -87,7 +134,7 @@ Think step-by-step. What is the most logical next action?
                 { role: 'user', content: cumulativePrompt},
                 { role: 'user', content: { media: { url: screenshot } } },
             ],
-            tools: [clickTool, fillInFieldTool],
+            tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool],
             model: 'googleai/gemini-2.5-flash',
         });
         
@@ -103,20 +150,32 @@ Think step-by-step. What is the most logical next action?
             observation = 'The agent decided to finish the session.'
         }
         
-        steps.push({
-          action: `${action}(${JSON.stringify(actionInput) || ''})`,
-          screenshot,
-          observation: observation,
-        });
-
+        let toolResult = '';
         if (action === 'observe' || !agentResponse.toolRequest) {
+            steps.push({
+              action: `observe()`,
+              screenshot,
+              observation: observation,
+            });
             break; // Agent decided to stop
+        } else {
+          const toolResponse = await agentResponse.runTool();
+          if(toolResponse) {
+            toolResult = `Tool Output: ${toolResponse}`;
+            observation += `\n${toolResult}`;
+          }
+           steps.push({
+             action: `${action}(${JSON.stringify(actionInput) || ''})`,
+             screenshot,
+             observation: observation,
+           });
         }
         
         cumulativePrompt += `
         Step ${i + 1}:
         - Observation: ${observation}
         - Action: ${action} with input ${JSON.stringify(actionInput)}
+        - Result: ${toolResult || 'No output.'}
         
         Now, analyze the new screenshot and decide the next action.
         `;

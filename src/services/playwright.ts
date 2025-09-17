@@ -50,6 +50,31 @@ class PlaywrightService {
     return `data:image/png;base64,${buffer.toString('base64')}`;
   }
 
+  async isVisible(selector: string): Promise<boolean> {
+    try {
+      await this.page.waitForSelector(selector, { state: 'visible', timeout: 3000 });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async scroll(direction: 'up' | 'down') {
+    if (direction === 'down') {
+      await this.page.evaluate(() => window.scrollBy(0, window.innerHeight));
+    } else {
+      await this.page.evaluate(() => window.scrollBy(0, -window.innerHeight));
+    }
+  }
+
+  async pressKey(key: string, selector?: string) {
+    if (selector) {
+      await this.page.press(selector, key);
+    } else {
+      await this.page.keyboard.press(key);
+    }
+  }
+
   async close() {
     if (this.browser) {
       await this.browser.close();
