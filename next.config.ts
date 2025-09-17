@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  serverActions: {
+    // Increase the timeout for server actions to 2 minutes (120 seconds)
+    // This is needed for long-running AI tasks like the test agent.
+    bodySizeLimit: '4.5mb',
+  },
 };
 
 export default nextConfig;
