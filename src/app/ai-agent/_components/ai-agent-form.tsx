@@ -102,12 +102,11 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a device to emulate" />
+                            <SelectValue placeholder="Default (Desktop)" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <ScrollArea className="h-72">
-                            <SelectItem value="">Default (Desktop)</SelectItem>
                             {supportedDevices.map(device => (
                               <SelectItem key={device} value={device}>{device}</SelectItem>
                             ))}
@@ -222,5 +221,3 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
     </div>
   );
 }
-
-    
