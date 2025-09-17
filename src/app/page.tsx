@@ -3,16 +3,10 @@ import {
   ArrowRight,
   FileText,
   FileCode2,
-  Workflow,
-  Github,
-  BookOpenText,
-  Sparkles,
-  Rocket,
-  Bot,
-  Terminal,
   ShieldCheck,
   ClipboardCheck,
   Video,
+  Bot,
 } from 'lucide-react';
 import {
   Card,
@@ -65,11 +59,12 @@ const features = [
 export default function Home() {
   return (
     <div className="space-y-12">
-      <div className="relative rounded-xl overflow-hidden bg-card p-8 border">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent dark:from-black/20" />
+      <div className="relative rounded-xl overflow-hidden p-8 border bg-card">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+        <div className="absolute -inset-px rounded-xl border border-transparent [background:linear-gradient(var(--angle),theme(colors.primary/0.5),theme(colors.secondary/0.5))] [-webkit-mask-composite:xor] [-webkit-mask:linear-gradient(black,black)_content-box,linear-gradient(black,black)]" style={{'--angle': '0deg', animation: 'rotate 5s linear infinite'}} />
+        
         <div className="relative z-10 flex flex-col items-center text-center">
-            <Rocket className="w-24 h-24 text-primary mb-4 animate-bounce" />
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 font-headline">
+          <h1 className="text-4xl md:text-5xl font-bold font-headline mb-4 animated-gradient-text">
             Welcome to Firebase AutoPilot
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
@@ -80,16 +75,19 @@ export default function Home() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
-          <Card key={feature.href} className="flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-xl hover:border-primary/50 hover:-translate-y-1.5">
+          <Card key={feature.href} className="flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1.5 border-transparent bg-secondary/20 hover:bg-secondary/50">
+             <div className="absolute -inset-px rounded-xl border-2 border-transparent transition-all duration-300 group-hover:border-primary/50" />
             <CardHeader>
               <div className="flex items-start justify-between">
                 <CardTitle className="text-xl font-headline">{feature.title}</CardTitle>
-                {feature.icon}
+                <div className="p-2 bg-secondary/50 rounded-lg transition-all duration-300 group-hover:bg-primary/10 group-hover:shadow-[0_0_15px] group-hover:shadow-primary/50">
+                  {feature.icon}
+                </div>
               </div>
               <CardDescription>{feature.description}</CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
-              <Button asChild variant="secondary" className="w-full group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
+              <Button asChild variant="ghost" className="w-full bg-primary/10 text-primary-foreground/80 group-hover:bg-primary/80 group-hover:text-primary-foreground transition-colors">
                 <Link href={feature.href}>
                   Go to {feature.title} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
