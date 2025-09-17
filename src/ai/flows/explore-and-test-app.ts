@@ -29,6 +29,7 @@ export const ExploreAndTestAppOutputSchema = z.object({
       observation: z.string().describe('The agent\'s observation after the action.'),
     })
   ),
+  video: z.string().optional().describe('A base64 encoded video of the test session. As a data URI.'),
 });
 export type ExploreAndTestAppOutput = z.infer<
   typeof ExploreAndTestAppOutputSchema
@@ -270,9 +271,11 @@ ${steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join
         prompt: finalAnalysisPrompt
     });
 
+    const video = await playwrightService.closeAndGetVideo();
 
     return {
         summary: summary.text,
         steps: steps,
+        video: video || undefined,
     };
 }

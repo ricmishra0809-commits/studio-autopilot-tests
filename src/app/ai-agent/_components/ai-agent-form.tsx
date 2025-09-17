@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot } from 'lucide-react';
+import { Bot, Video } from 'lucide-react';
 import type { ExploreAndTestAppOutput } from '@/ai/flows/explore-and-test-app';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -179,6 +179,24 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
             </CardContent>
           </Card>
           
+          {result.video && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Video className="mr-2 h-5 w-5" />
+                  Session Recording
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <video
+                  src={result.video}
+                  controls
+                  className="w-full rounded-md border"
+                />
+              </CardContent>
+            </Card>
+          )}
+
           <div className="space-y-4">
              <h3 className="text-2xl font-bold font-headline">Agent Steps</h3>
             {result.steps.map((step, index) => (

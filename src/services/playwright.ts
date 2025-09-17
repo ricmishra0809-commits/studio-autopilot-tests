@@ -1,6 +1,8 @@
 'use server';
 
 import { chromium, devices } from 'playwright';
+import * as fs from 'fs';
+import * as path from 'path';
 
 class PlaywrightService {
   private static instance: PlaywrightService;
@@ -8,6 +10,7 @@ class PlaywrightService {
   private context: any;
   private page: any;
   private device: string | undefined;
+  private videoPath: string | null = null;
 
   private constructor(device?: string) {
     this.device = device;
@@ -16,7 +19,7 @@ class PlaywrightService {
   public static async getInstance(device?: string): Promise<PlaywrightService> {
     if (!PlaywrightService.instance || PlaywrightService.instance.device !== device) {
       if (PlaywrightService.instance) {
-        await PlaywrightService.instance.close();
+        await PlaywrightService.instance.closeAndGetVideo();
       }
       PlaywrightService.instance = new PlaywrightService(device);
       await PlaywrightService.instance.initialize();
@@ -26,10 +29,24 @@ class PlaywrightService {
 
   private async initialize() {
     this.browser = await chromium.launch({ headless: true });
+    
+    // Ensure the videos directory exists
+    const videosDir = path.join(process.cwd(), 'videos');
+    if (!fs.existsSync(videosDir)) {
+      fs.mkdirSync(videosDir, { recursive: true });
+    }
+
+    const contextOptions: any = {
+      recordVideo: {
+        dir: videosDir,
+        size: { width: 1280, height: 720 }
+      }
+    };
+
     if (this.device && devices[this.device]) {
-        this.context = await this.browser.newContext({ ...devices[this.device] });
+      this.context = await this.browser.newContext({ ...devices[this.device], ...contextOptions });
     } else {
-        this.context = await this.browser.newContext();
+      this.context = await this.browser.newContext(contextOptions);
     }
     this.page = await this.context.newPage();
   }
@@ -96,15 +113,28 @@ class PlaywrightService {
     }
   }
 
-  async close() {
+  async closeAndGetVideo(): Promise<string | null> {
+    if (this.page) {
+       this.videoPath = await this.page.video()?.path() || null;
+    }
+    if (this.context) {
+      await this.context.close();
+    }
     if (this.browser) {
       await this.browser.close();
     }
+    
+    let videoDataUri: string | null = null;
+    if (this.videoPath && fs.existsSync(this.videoPath)) {
+        const videoBuffer = fs.readFileSync(this.videoPath);
+        videoDataUri = `data:video/webm;base64,${videoBuffer.toString('base64')}`;
+        fs.unlinkSync(this.videoPath); // Clean up the video file
+    }
+    
     // @ts-ignore
     PlaywrightService.instance = null;
+    return videoDataUri;
   }
 }
 
-// We cannot initialize a singleton instance here anymore because device is a parameter.
-// The flow will be responsible for getting the instance.
 export { PlaywrightService };
