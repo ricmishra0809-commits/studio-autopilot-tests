@@ -707,28 +707,35 @@ const SidebarMenuSubItem = React.forwardRef<
 >(({ ...props }, ref) => <li ref={ref} className="relative" {...props} />)
 SidebarMenuSubItem.displayName = "SidebarMenuSubItem"
 
+const sidebarMenuSubButtonVariants = cva(
+  "flex h-8 min-w-0 w-full items-center gap-2 overflow-hidden rounded-md px-2.5 text-left text-sidebar-foreground/80 outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent/70 disabled:pointer-events-none disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 data-[active=true]:bg-sidebar-accent/80 data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium group-data-[collapsible=icon]:hidden",
+  {
+    variants: {
+      size: {
+        sm: "text-xs",
+        md: "text-sm",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+)
+
 const SidebarMenuSubButton = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     size?: "sm" | "md"
     isActive?: boolean
   }
->(({ size = "md", isActive, className, ...props }, ref) => {
-
+>(({ size, isActive, className, ...props }, ref) => {
   return (
     <a
       ref={ref}
       data-sidebar="menu-sub-button"
       data-size={size}
       data-active={isActive}
-      className={cn(
-        "flex h-8 min-w-0 w-full items-center gap-2 overflow-hidden rounded-md px-2.5 text-left text-sidebar-foreground/80 outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent/70 disabled:pointer-events-none disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "data-[active=true]:bg-sidebar-accent/80 data-[active=true]:text-sidebar-accent-foreground data-[active=true]:font-medium",
-        size === "sm" && "text-xs",
-        size === "md" && "text-sm",
-        "group-data-[collapsible=icon]:hidden",
-        className
-      )}
+      className={cn(sidebarMenuSubButtonVariants({ size, className }))}
       {...props}
     />
   )
@@ -762,3 +769,5 @@ export {
   SidebarTrigger,
   useSidebar,
 }
+
+    
