@@ -106,13 +106,16 @@ export function AppSidebar() {
           {navItems.map((section) => (
             section.title === 'Overview' ? (
                 <SidebarMenuItem key={section.title}>
-                  <Link href={section.links[0].href} className="w-full">
-                    <SidebarMenuButton 
+                  <Link href={section.links[0].href} passHref legacyBehavior>
+                    <SidebarMenuButton
+                      asChild
                       isActive={isLinkActive(section.links[0].href)}
                       tooltip={{children: section.links[0].label}}
                     >
-                      {section.links[0].icon}
-                      <span>{section.links[0].label}</span>
+                      <a>
+                        {section.links[0].icon}
+                        <span>{section.links[0].label}</span>
+                      </a>
                     </SidebarMenuButton>
                   </Link>
                 </SidebarMenuItem>
@@ -136,10 +139,12 @@ export function AppSidebar() {
                     <SidebarMenuSub>
                       {section.links.map((link) => (
                         <SidebarMenuSubItem key={link.href}>
-                          <Link href={link.href}>
-                            <SidebarMenuSubButton isActive={isLinkActive(link.href)}>
-                              {link.icon}
-                              <span>{link.label}</span>
+                          <Link href={link.href} passHref legacyBehavior>
+                            <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
+                              <a>
+                                {link.icon}
+                                <span>{link.label}</span>
+                              </a>
                             </SidebarMenuSubButton>
                           </Link>
                         </SidebarMenuSubItem>
