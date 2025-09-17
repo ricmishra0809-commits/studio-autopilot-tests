@@ -250,9 +250,24 @@ Think step-by-step. What is the most logical next action? If a previous action f
         `;
     }
 
+    const performance = await playwrightService.getPagePerformanceMetrics();
+    const dom = await playwrightService.getPageContent();
+    const finalAnalysisPrompt = `Based on the following steps and observations, summarize the testing session for the task: "${input.task}".
+
+Also, provide a brief "Performance and Security Insights" section.
+- For performance, analyze these metrics: ${JSON.stringify(performance)}. Was the page load fast?
+- For security, analyze the final DOM for any broken links (<a> tags with empty href) or obvious issues.
+
+DOM:
+${dom}
+
+Testing Steps:
+${steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join('\n\n')}
+`;
+
+
     const summary = await ai.generate({
-        prompt: `Based on the following steps and observations, summarize the testing session for the task: "${input.task}".\n\n` + 
-                steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join('\n\n'),
+        prompt: finalAnalysisPrompt
     });
 
 

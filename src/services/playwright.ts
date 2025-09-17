@@ -85,6 +85,17 @@ class PlaywrightService {
     }
   }
 
+  async getPagePerformanceMetrics(): Promise<any> {
+    const performanceTiming = await this.page.evaluate(() => JSON.stringify(window.performance.timing));
+    const parsed = JSON.parse(performanceTiming);
+    const loadTime = parsed.loadEventEnd - parsed.navigationStart;
+    const domComplete = parsed.domComplete - parsed.domInteractive;
+    return {
+      loadTime: `${loadTime}ms`,
+      domCompleteTime: `${domComplete}ms`,
+    }
+  }
+
   async close() {
     if (this.browser) {
       await this.browser.close();
