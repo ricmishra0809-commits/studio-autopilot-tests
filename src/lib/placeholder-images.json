@@ -1,3 +1,47 @@
+
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "dashboard-hero",
+      "description": "Abstract technology background representing automation",
+      "imageUrl": "https://picsum.photos/seed/autopilot1/1200/400",
+      "imageHint": "abstract technology"
+    },
+    {
+      "id": "card-strategy",
+      "description": "A blueprint or plan representing test strategy",
+      "imageUrl": "https://picsum.photos/seed/autopilot2/400/200",
+      "imageHint": "blueprint plan"
+    },
+    {
+      "id": "card-scripts",
+      "description": "Code on a screen representing test scripts",
+      "imageUrl": "https://picsum.photos/seed/autopilot3/400/200",
+      "imageHint": "code editor"
+    },
+    {
+      "id": "card-workflow",
+      "description": "A flowchart diagram representing an n8n workflow",
+      "imageUrl": "https://picsum.photos/seed/autopilot4/400/200",
+      "imageHint": "flowchart diagram"
+    },
+    {
+      "id": "card-cicd",
+      "description": "A factory pipeline representing CI/CD",
+      "imageUrl": "https://picsum.photos/seed/autopilot5/400/200",
+      "imageHint": "pipeline factory"
+    },
+    {
+      "id": "card-docs",
+      "description": "An open book representing documentation",
+      "imageUrl": "https://picsum.photos/seed/autopilot6/400/200",
+      "imageHint": "documentation book"
+    },
+    {
+      "id": "card-ai",
+      "description": "A robotic brain representing AI enhancements",
+      "imageUrl": "https://picsum.photos/seed/autopilot7/400/200",
+      "imageHint": "robot brain"
+    }
+  ]
 }
