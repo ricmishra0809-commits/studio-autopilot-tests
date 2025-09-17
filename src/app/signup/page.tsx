@@ -69,6 +69,7 @@ export default function SignupPage() {
       case 'auth/email-already-in-use':
         return 'This email is already registered. Please log in.';
       case 'auth/invalid-email':
+      case 'auth/invalid-credential':
         return 'The email address is not valid.';
       case 'auth/weak-password':
         return 'The password is too weak. Please use at least 6 characters.';
