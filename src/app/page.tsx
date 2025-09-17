@@ -8,6 +8,7 @@ import {
   BookOpenText,
   Sparkles,
   Rocket,
+  Bot,
 } from 'lucide-react';
 import {
   Card,
@@ -50,10 +51,10 @@ const features = [
     icon: <BookOpenText className="w-8 h-8 text-primary" />,
   },
   {
-    title: 'AI Tools',
-    description: 'Enhance your testing with AI-powered analysis and suggestions.',
-    href: '/summarize-ci',
-    icon: <Sparkles className="w-8 h-8 text-primary" />,
+    title: 'AI Test Agent',
+    description: 'Let an AI agent explore your app and find bugs automatically.',
+    href: '/ai-agent',
+    icon: <Bot className="w-8 h-8 text-primary" />,
   },
 ];
 

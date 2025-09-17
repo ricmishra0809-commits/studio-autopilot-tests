@@ -14,7 +14,8 @@ import {
   ClipboardCheck,
   ShieldCheck,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Bot,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -80,6 +81,7 @@ export const navItems: NavSection[] = [
     links: [
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck className="h-4 w-4" /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck className="h-4 w-4" /> },
+      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
     ],
   },
 ];
