@@ -14,7 +14,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="relative flex min-h-dvh">
+      <div className="relative flex min-h-dvh bg-grid-pattern">
         <AppSidebar />
         <MainContent>{children}</MainContent>
       </div>

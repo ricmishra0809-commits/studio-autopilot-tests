@@ -18,7 +18,7 @@ export function MainContent({ children }: { children: React.ReactNode }) {
   const pageTitle = getPageTitle();
 
   return (
-    <SidebarInset className="w-full">
+    <SidebarInset>
       <header className="flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur-sm px-4 md:px-6 sticky top-0 z-30">
         <SidebarTrigger className="md:hidden" />
         <div className="flex items-center gap-2">
