@@ -4,10 +4,7 @@ import { TestScriptsForm } from './_components/test-scripts-form';
 
 export default async function TestScriptsPage() {
   async function getScripts(data: {
-    backend: string;
-    tools: string;
-    firestoreSchema: string;
-    functionsCode: string;
+    projectDetails: string;
   }) {
     'use server';
     return await generateAutomatedTests(data);

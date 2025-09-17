@@ -12,10 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateAutomatedTestsInputSchema = z.object({
-  backend: z.string().describe('Description of the backend: Firebase Auth, Firestore, Firebase Functions, Hosting'),
-  tools: z.string().describe('List of tools being used: Firebase Emulator, Playwright (E2E), Jest (Unit tests), Supertest (API), n8n workflows, GitHub Actions (backup)'),
-  firestoreSchema: z.string().describe('The Firestore schema definition.'),
-  functionsCode: z.string().describe('The Firebase Functions code.'),
+  projectDetails: z.string().describe('The full details of the project, including backend services, tools, schema, and function code. This can be a single block of text or a structured document.'),
 });
 export type GenerateAutomatedTestsInput = z.infer<typeof GenerateAutomatedTestsInputSchema>;
 
@@ -37,14 +34,17 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateAutomatedTestsOutputSchema},
   prompt: `You are an expert QA Automation Engineer specializing in generating automated test scripts for Firebase projects.
 
-  Based on the provided Firebase project details, generate comprehensive test scripts for various aspects of the project.
-  Ensure the generated tests cover Jest unit tests for Firebase Functions, Firestore Security Rules tests, Playwright E2E tests for Auth flows (signup/login), and API tests for Cloud Function endpoints.
+  Based on the provided Firebase project details below, analyze the information and generate comprehensive test scripts.
+  The details might be unstructured. Your first task is to identify the backend services (like Firebase Auth, Firestore), the tools being used (like Playwright, Jest), the Firestore schema, and any relevant Firebase Functions code.
 
-  Here are the details of the Firebase project:
-  Backend: {{{backend}}}
-  Tools: {{{tools}}}
-  Firestore Schema: {{{firestoreSchema}}}
-  Functions Code: {{{functionsCode}}}
+  Once you have parsed this information, generate the following test scripts:
+  1.  Jest unit tests for any Firebase Functions you find.
+  2.  Firestore Security Rules tests based on the schema and rules.
+  3.  Playwright E2E tests for user authentication flows (signup/login).
+  4.  API tests for any Cloud Function HTTP endpoints.
+
+  Here are the project details:
+  {{{projectDetails}}}
 
   Consider the best practices for each testing framework and provide well-structured and maintainable test scripts.
 

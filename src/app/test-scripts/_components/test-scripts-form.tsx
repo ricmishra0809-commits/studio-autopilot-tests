@@ -24,10 +24,9 @@ import { FileCode2 } from 'lucide-react';
 import type { GenerateAutomatedTestsOutput } from '@/ai/flows/generate-automated-tests';
 
 const formSchema = z.object({
-  backend: z.string().min(10),
-  tools: z.string().min(10),
-  firestoreSchema: z.string().min(10),
-  functionsCode: z.string().min(10),
+  projectDetails: z.string().min(50, {
+    message: "Project details must be at least 50 characters."
+  }),
 });
 
 type TestScriptsFormProps = {
@@ -41,19 +40,30 @@ export function TestScriptsForm({ getScripts }: TestScriptsFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      backend: 'Firebase Auth, Firestore, Firebase Functions, Hosting',
-      tools: 'Firebase Emulator, Playwright (E2E), Jest (Unit tests), Supertest (API)',
-      firestoreSchema: `// users/{userId}
+      projectDetails: `
+// Paste all project details here. The AI will parse them.
+
+== Backend Services ==
+Firebase Auth, Firestore, Firebase Functions, Hosting
+
+== Testing Tools ==
+Firebase Emulator, Playwright (E2E), Jest (Unit tests), Supertest (API)
+
+== Firestore Schema ==
+// users/{userId}
 //   - displayName: string
 //   - email: string
 //
 // projects/{projectId}
 //   - ownerId: string (userId)
-//   - name: string`,
-      functionsCode: `const functions = require('firebase-functions');
+//   - name: string
+
+== Firebase Functions Code ==
+const functions = require('firebase-functions');
 exports.sayHello = functions.https.onCall((data, context) => {
   return { message: \`Hello, \${data.name}!\` };
-});`,
+});
+`,
     },
   });
 
@@ -74,63 +84,29 @@ exports.sayHello = functions.https.onCall((data, context) => {
     <div>
       <PageHeader
         title="Automated Test Script Generation"
-        description="Provide details about your Firebase project, and our AI will generate ready-to-use test scripts for Jest, Playwright, and more."
+        description="Provide details about your Firebase project in a single step. Paste all relevant information below, and our AI will analyze it to generate ready-to-use test scripts."
       />
 
       <Card className="mb-8">
         <CardContent className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <FormField
-                  control={form.control}
-                  name="backend"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Backend Services</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g., Firebase Auth, Firestore" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="tools"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Testing Tools</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="e.g., Jest, Playwright" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               <FormField
                 control={form.control}
-                name="firestoreSchema"
+                name="projectDetails"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Firestore Schema</FormLabel>
+                    <FormLabel className="text-lg">Project Details</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Describe your collections and documents..." className="min-h-[150px] font-code" {...field} />
+                      <Textarea 
+                        placeholder="Paste all your project details here..." 
+                        className="min-h-[400px] font-code text-xs" 
+                        {...field} 
+                      />
                     </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="functionsCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Firebase Functions Code</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Paste relevant Cloud Functions code..." className="min-h-[150px] font-code" {...field} />
-                    </FormControl>
+                     <FormDescription>
+                      Include backend services, tools, Firestore schema, Functions code, and any other relevant information.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
