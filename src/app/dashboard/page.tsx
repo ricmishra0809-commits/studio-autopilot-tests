@@ -1,4 +1,3 @@
-
 'use server';
 
 import Link from 'next/link';
@@ -31,12 +30,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { Bar, BarChart as RechartsBarChart, XAxis, YAxis } from 'recharts';
+import { DashboardCharts } from './_components/dashboard-charts';
 
 export default async function DashboardPage() {
   const testRuns = await getTestRuns();
@@ -114,24 +108,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
              {totalRuns > 0 ? (
-            <ChartContainer config={{}} className="h-[200px] w-full">
-              <RechartsBarChart accessibilityLayer data={chartData} layout="vertical">
-                <XAxis type="number" hide />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                  className="capitalize"
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="dot" />}
-                />
-                <Bar dataKey="value" radius={5} />
-              </RechartsBarChart>
-            </ChartContainer>
+                <DashboardCharts data={chartData} />
             ) : (
                 <div className="flex flex-col items-center justify-center h-[200px] text-center">
                     <p className="text-muted-foreground">No test data available yet.</p>
