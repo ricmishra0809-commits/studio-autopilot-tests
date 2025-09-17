@@ -94,16 +94,11 @@
     },
     {
       "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "general",
         "text": "✅ CI run passed! Deploying new version to production.",
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "✅ *CI Run Passed!*\\nDeploying new version to production."
-            }
-          }
-        ]
+        "otherOptions": {}
       },
       "id": "6",
       "name": "Notify Success on Slack",
@@ -122,16 +117,11 @@
     },
     {
       "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "general",
         "text": "❌ CI run failed! Reason: {{$json.choices[0].message.content}}",
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "❌ *CI Run Failed!*\\n*AI Summary:* {{$json.choices[0].message.content}}"
-            }
-          }
-        ]
+        "otherOptions": {}
       },
       "id": "7",
       "name": "Notify Failure on Slack",
@@ -227,3 +217,4 @@
     "automation"
   ]
 }
+
