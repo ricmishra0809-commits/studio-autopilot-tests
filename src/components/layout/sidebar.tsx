@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -30,6 +31,7 @@ import {
   SidebarFooter,
   SidebarMenuSub,
   SidebarMenuSubItem,
+  sidebarMenuButtonVariants,
   SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
 import {
@@ -40,6 +42,7 @@ import {
 import React from 'react';
 import { useAuth } from '@/context/auth-context';
 import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 type NavLink = {
   href: string;
