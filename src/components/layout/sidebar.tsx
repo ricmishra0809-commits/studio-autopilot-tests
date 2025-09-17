@@ -136,11 +136,11 @@ export function AppSidebar() {
                 <SidebarMenuSub>
                     {section.links.map((link) => (
                     <SidebarMenuSubItem key={link.href}>
-                        <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
-                        <Link href={link.href}>
+                        <Link href={link.href} legacyBehavior={false}>
+                          <SidebarMenuSubButton isActive={isLinkActive(link.href)}>
                             <span>{link.label}</span>
+                          </SidebarMenuSubButton>
                         </Link>
-                        </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                     ))}
                 </SidebarMenuSub>
