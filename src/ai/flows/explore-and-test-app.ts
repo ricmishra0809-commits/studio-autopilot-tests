@@ -10,6 +10,7 @@ import { PlaywrightService } from '@/services/playwright';
 import { z } from 'genkit';
 import type { ExploreAndTestAppInput, ExploreAndTestAppOutput } from '@/ai/schemas/explore-and-test-app';
 import { ExploreAndTestAppInputSchema } from '@/ai/schemas/explore-and-test-app';
+import { saveTestResult } from '@/services/firestore';
 
 
 export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<ExploreAndTestAppOutput> {
@@ -250,9 +251,19 @@ ${steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join
         prompt: finalAnalysisPrompt
     });
 
-    return {
+    const result = {
         summary: summary.text,
         steps: steps,
         video: video || undefined,
     };
+    
+    // Save the result to Firestore
+    await saveTestResult({
+        ...result,
+        url: input.url,
+        task: input.task,
+        video: video || null,
+    });
+
+    return result;
 }

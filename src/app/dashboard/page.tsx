@@ -1,15 +1,17 @@
 
+'use server';
+
 import Link from 'next/link';
 import {
-  ArrowRight,
+  AlertTriangle,
+  CheckCircle2,
   FileText,
   FileCode2,
-  ShieldCheck,
-  ClipboardCheck,
-  Video,
   Bot,
-  Workflow,
-  Terminal,
+  BarChart,
+  History,
+  Clock,
+  ExternalLink,
 } from 'lucide-react';
 import {
   Card,
@@ -19,95 +21,222 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { getTestRuns } from '@/services/firestore';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart';
+import { Bar, BarChart as RechartsBarChart, XAxis, YAxis } from 'recharts';
 
-const features = [
-   {
-    title: 'Workflow',
-    description: 'Understand the entire automated testing and deployment pipeline.',
-    href: '/workflow',
-    icon: <Workflow className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Test Strategy',
-    description: 'Generate a comprehensive test strategy for your project.',
-    href: '/test-strategy',
-    icon: <FileText className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Test Scripts',
-    description: 'Automatically create Jest, Playwright, and other test scripts.',
-    href: '/test-scripts',
-    icon: <FileCode2 className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Security Rules',
-    description: 'Get AI-powered suggestions to improve your security.',
-    href: '/security-rules',
-    icon: <ShieldCheck className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Summarize CI',
-    description: 'Paste raw CI logs to get a clean, AI-generated summary.',
-    href: '/summarize-ci',
-    icon: <ClipboardCheck className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'AI Test Agent',
-    description: 'Let an AI agent explore your app and find bugs automatically.',
-    href: '/ai-agent',
-    icon: <Bot className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'Test Video Gen',
-    description: 'Generate a video clip of a test scenario using AI.',
-    href: '/test-video',
-    icon: <Video className="w-6 h-6 text-foreground/80" />,
-  },
-  {
-    title: 'CI/CD Integration',
-    description: 'Trigger the AI Test Agent from your CI/CD pipeline.',
-    href: '/cicd-integration',
-    icon: <Terminal className="w-6 h-6 text-foreground/80" />,
-  }
-];
+export default async function DashboardPage() {
+  const testRuns = await getTestRuns();
 
-export default function DashboardPage() {
+  const totalRuns = testRuns.length;
+  const passedRuns = testRuns.filter((run) => run.status === 'Pass').length;
+  const failedRuns = totalRuns - passedRuns;
+  const passRate = totalRuns > 0 ? (passedRuns / totalRuns) * 100 : 0;
+
+  const chartData = [
+    { name: 'Passed', value: passedRuns, fill: 'hsl(var(--chart-2))' },
+    { name: 'Failed', value: failedRuns, fill: 'hsl(var(--destructive))' },
+  ];
+
   return (
-    <div className="space-y-12">
-      <div className="flex flex-col items-center text-center py-16">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 animated-gradient-text">
-          Studio AutoPilot
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight font-headline">
+          Dashboard
         </h1>
-        <p className="text-lg text-muted-foreground max-w-2xl">
-          Your AI-powered copilot for comprehensive, automated testing.
+        <p className="text-lg text-muted-foreground">
+          Welcome back! Here's a summary of your recent automated test runs.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => (
-          <Card key={feature.href} className="group relative flex flex-col overflow-hidden bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5">
-            <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-br from-white/5 to-transparent transition-all duration-300 group-hover:from-white/10" />
-            <CardHeader className="relative z-10">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
-                  {feature.icon}
-                </div>
-                <CardTitle className="text-lg font-headline">{feature.title}</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="relative z-10 flex-grow flex flex-col">
-              <CardDescription className="flex-grow">{feature.description}</CardDescription>
-              <div className="mt-6">
-                <Button asChild variant="ghost" className="w-full justify-start p-0 h-auto text-sm font-normal text-muted-foreground hover:text-foreground transition-colors hover:bg-transparent">
-                  <Link href={feature.href}>
-                    Go to page <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Runs</CardTitle>
+            <History className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalRuns}</div>
+            <p className="text-xs text-muted-foreground">
+              Total tests executed by the AI agent.
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pass Rate</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{passRate.toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground">
+              {passedRuns} of {totalRuns} tests passed.
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Failures</CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{failedRuns}</div>
+            <p className="text-xs text-muted-foreground">
+              Tests that failed or found issues.
+            </p>
+          </CardContent>
+        </Card>
       </div>
+
+      <div className="grid gap-8 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart className="h-5 w-5" />
+              Test Run Analytics
+            </CardTitle>
+            <CardDescription>
+              A visual summary of passed vs. failed test runs.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             {totalRuns > 0 ? (
+            <ChartContainer config={{}} className="h-[200px] w-full">
+              <RechartsBarChart accessibilityLayer data={chartData} layout="vertical">
+                <XAxis type="number" hide />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  className="capitalize"
+                />
+                <ChartTooltip
+                  cursor={false}
+                  content={<ChartTooltipContent indicator="dot" />}
+                />
+                <Bar dataKey="value" radius={5} />
+              </RechartsBarChart>
+            </ChartContainer>
+            ) : (
+                <div className="flex flex-col items-center justify-center h-[200px] text-center">
+                    <p className="text-muted-foreground">No test data available yet.</p>
+                    <p className="text-sm text-muted-foreground">Run an AI Agent to see analytics.</p>
+                     <Button variant="outline" size="sm" asChild className="mt-4">
+                        <Link href="/ai-agent">
+                            <Bot className="mr-2 h-4 w-4" /> Run Agent
+                        </Link>
+                    </Button>
+                </div>
+            )}
+          </CardContent>
+        </Card>
+        <div className="grid gap-4">
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-lg font-headline">Quick Links</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-4">
+                    <Button variant="outline" asChild className="justify-start">
+                        <Link href="/test-strategy"><FileText className="mr-2" /> Generate Strategy</Link>
+                    </Button>
+                     <Button variant="outline" asChild className="justify-start">
+                        <Link href="/test-scripts"><FileCode2 className="mr-2" /> Generate Scripts</Link>
+                    </Button>
+                     <Button variant="default" asChild className="justify-start col-span-2">
+                        <Link href="/ai-agent"><Bot className="mr-2" /> Run New AI Test</Link>
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Test Runs</CardTitle>
+          <CardDescription>
+            Here are the latest test runs executed by the AI agent.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Status</TableHead>
+                <TableHead>Task</TableHead>
+                <TableHead className="hidden md:table-cell">URL</TableHead>
+                <TableHead className="hidden lg:table-cell">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    Ran At
+                  </div>
+                </TableHead>
+                <TableHead className="text-right">Video</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {testRuns.length > 0 ? (
+                testRuns.map((run) => (
+                  <TableRow key={run.id}>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          run.status === 'Pass' ? 'secondary' : 'destructive'
+                        }
+                        className="capitalize"
+                      >
+                        {run.status === 'Pass' ? (
+                          <CheckCircle2 className="mr-1 h-3 w-3 text-green-400" />
+                        ) : (
+                          <AlertTriangle className="mr-1 h-3 w-3" />
+                        )}
+                        {run.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium max-w-[200px] truncate">{run.task}</TableCell>
+                    <TableCell className="hidden md:table-cell max-w-[150px] truncate">{run.url}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{run.createdAt}</TableCell>
+                    <TableCell className="text-right">
+                      {run.videoUrl ? (
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={run.videoUrl} target="_blank" rel="noopener noreferrer">
+                            View <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="h-24 text-center text-muted-foreground"
+                  >
+                    No test runs found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }

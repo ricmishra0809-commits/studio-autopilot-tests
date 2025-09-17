@@ -137,19 +137,19 @@ export function AppSidebar() {
                 <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
                 <SidebarMenuSub>
                     {section.links.map((link) => (
-                    <SidebarMenuSubItem key={link.href}>
-                      <Link
-                        href={link.href}
-                        className={cn(
-                          sidebarMenuSubItemVariants({ size: 'md' }),
-                          'w-full',
-                          isLinkActive(link.href) &&
-                            'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
-                        )}
-                      >
-                        <span>{link.label}</span>
-                      </Link>
-                    </SidebarMenuSubItem>
+                      <SidebarMenuSubItem key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={cn(
+                            sidebarMenuSubButtonVariants({ size: 'md' }),
+                            'w-full',
+                            isLinkActive(link.href) &&
+                              'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
+                          )}
+                        >
+                          <span>{link.label}</span>
+                        </Link>
+                      </SidebarMenuSubItem>
                     ))}
                 </SidebarMenuSub>
                 </CollapsibleContent>
