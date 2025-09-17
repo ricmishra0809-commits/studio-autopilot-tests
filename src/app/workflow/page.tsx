@@ -1,6 +1,8 @@
+
 import { PageHeader } from '@/components/shared/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Bot, ClipboardCheck, FileCode2, FileText, GitBranch, Rocket, Server } from 'lucide-react';
+import { ArrowRight, Bot, ClipboardCheck, FileText, Rocket, Server } from 'lucide-react';
+import React from 'react';
 
 const workflowSteps = [
   {
