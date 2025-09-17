@@ -21,8 +21,8 @@ export function AppShellWrapper({ children }: { children: React.ReactNode }) {
       if (!user && !PUBLIC_ROUTES.includes(pathname)) {
         router.push('/login');
       }
-      // If user is logged in and trying to access login/signup
-      if (user && AUTH_ROUTES.includes(pathname)) {
+      // If user is logged in and trying to access login/signup or the landing page
+      if (user && (AUTH_ROUTES.includes(pathname) || pathname === '/')) {
         router.push('/dashboard');
       }
     }
