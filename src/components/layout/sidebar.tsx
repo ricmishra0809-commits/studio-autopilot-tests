@@ -19,6 +19,7 @@ import {
   Terminal,
   Video,
   LogOut,
+  MousePointerClick,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -79,6 +80,7 @@ export const navItems: NavSection[] = [
     icon: <Bot className="h-4 w-4" />,
     links: [
       { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
+      { href: '/visual-recorder', label: 'Visual Recorder', icon: <MousePointerClick className="h-4 w-4" /> },
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck className="h-4 w-4" /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck className="h-4 w-4" /> },
       { href: '/test-video', label: 'Test Video Gen', icon: <Video className="h-4 w-4" /> },
