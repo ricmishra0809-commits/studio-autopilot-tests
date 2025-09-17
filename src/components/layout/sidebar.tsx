@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Bot,
   Terminal,
+  Video,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -84,6 +85,7 @@ export const navItems: NavSection[] = [
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck className="h-4 w-4" /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck className="h-4 w-4" /> },
       { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
+      { href: '/test-video', label: 'Test Video Gen', icon: <Video className="h-4 w-4" /> },
     ],
   },
 ];
