@@ -45,15 +45,19 @@ export function SecurityRulesForm({ getSuggestions }: SecurityRulesFormProps) {
       securityRules: `rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // By default, deny all reads and writes
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // Allow logged-in users to read and create their own test runs
+    match /test-runs/{runId} {
+      allow read, create: if request.auth != null;
     }
   }
 }`,
       firestoreSchema: `// collections:
-// - users (uid)
-// - projects (projectId)
-//   - tasks (taskId)`,
+// - test-runs (contains test results from the AI agent)`,
     },
   });
 
