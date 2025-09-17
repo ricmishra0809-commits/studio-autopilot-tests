@@ -144,13 +144,36 @@ const pressKeyTool = ai.defineTool(
     }
 );
 
+const analyzeVisualsTool = ai.defineTool(
+  {
+    name: 'analyzeVisuals',
+    description: 'Analyzes the current page screenshot to answer questions about visual elements, layout, and style. Use this to check for visual bugs.',
+    inputSchema: z.object({
+      query: z.string().describe('The question to ask about the screenshot (e.g., "Is the main title centered?", "Is there any overlapping text?").'),
+      justification: z.string().describe('Why you are analyzing the visuals.'),
+    }),
+    outputSchema: z.string().describe('The answer to your visual query.'),
+  },
+  async ({ query }) => {
+    const screenshot = await playwrightService.getPageAsDataUri();
+    const result = await ai.generate({
+      prompt: [
+        { role: 'user', content: `You are a UI/UX expert. Analyze the following screenshot and answer the question. Be concise. Question: ${query}`},
+        { role: 'user', content: { media: { url: screenshot } } },
+      ],
+      model: 'googleai/gemini-2.5-flash',
+    });
+    return result.text;
+  }
+);
+
 
 export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<ExploreAndTestAppOutput> {
     await playwrightService.goTo(input.url);
 
     let steps = [];
     let cumulativePrompt = `You are an AI Test Agent with Self-Healing capabilities. Your goal is to test a web application by exploring it to complete a task.
-You can see the screen and interact with it using the provided tools. If a selector for an element is not working, you can use the 'findAlternativeSelector' tool to attempt to self-heal the test.
+You can see the screen and interact with it using the provided tools. If a selector for an element is not working, you can use the 'findAlternativeSelector' tool to attempt to self-heal the test. You can also use the 'analyzeVisuals' tool to check for UI/UX issues.
 
 Your task is: ${input.task}
 The current URL is: ${input.url}
@@ -167,7 +190,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
                 { role: 'user', content: cumulativePrompt},
                 { role: 'user', content: { media: { url: screenshot } } },
             ],
-            tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool, findAlternativeSelector],
+            tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool, findAlternativeSelector, analyzeVisualsTool],
             model: 'googleai/gemini-2.5-flash',
         });
         
@@ -235,5 +258,3 @@ Think step-by-step. What is the most logical next action? If a previous action f
         steps: steps,
     };
 }
-
-    
