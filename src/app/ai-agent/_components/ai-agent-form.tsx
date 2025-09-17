@@ -55,8 +55,12 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setResult(null);
+    const dataToSend = {
+        ...values,
+        device: values.device === 'Default (Desktop)' ? '' : values.device
+    };
     try {
-      const response = await runAgent(values);
+      const response = await runAgent(dataToSend);
       setResult(response);
     } catch (error) {
       console.error('Error running AI agent:', error);
@@ -99,7 +103,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-lg">Device Emulation</FormLabel>
-                       <Select onValueChange={field.onChange} defaultValue={field.value}>
+                       <Select onValueChange={field.onChange} defaultValue={field.value || 'Default (Desktop)'}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Default (Desktop)" />
@@ -108,7 +112,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                         <SelectContent>
                           <ScrollArea className="h-72">
                             {supportedDevices.map(device => (
-                              <SelectItem key={device} value={device}>{device || 'Default (Desktop)'}</SelectItem>
+                              <SelectItem key={device} value={device}>{device}</SelectItem>
                             ))}
                           </ScrollArea>
                         </SelectContent>
