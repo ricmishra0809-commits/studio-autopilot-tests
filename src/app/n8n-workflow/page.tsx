@@ -2,7 +2,7 @@
 
 import { PageHeader } from '@/components/shared/page-header';
 import { CodeBlock } from '@/components/shared/code-block';
-import { n8nWorkflowJson } from '@/lib/constants';
+import n8nWorkflow from '../../../docs/n8n-workflow.json';
 import {
   Card,
   CardContent,
@@ -13,6 +13,8 @@ import {
 import { CheckCircle, Sparkles } from 'lucide-react';
 
 export default function N8nWorkflowPage() {
+  const n8nWorkflowJson = JSON.stringify(n8nWorkflow, null, 2);
+
   return (
     <div>
       <PageHeader
