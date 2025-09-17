@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -20,6 +19,8 @@ import {
   Video,
   LogOut,
   MousePointerClick,
+  User,
+  Settings,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -32,7 +33,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   sidebarMenuSubButtonVariants,
-  sidebarMenuSubItemVariants,
 } from '@/components/ui/sidebar';
 import {
   Collapsible,
@@ -43,6 +43,15 @@ import React from 'react';
 import { useAuth } from '@/context/auth-context';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 type NavLink = {
   href: string;
@@ -101,11 +110,16 @@ export const navItems: NavSection[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const isLinkActive = (href: string) => {
     return pathname === href;
   };
+
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  }
 
   return (
     <Sidebar collapsible="icon" className="hidden md:flex md:flex-col bg-sidebar text-sidebar-foreground">
@@ -174,11 +188,43 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 mt-auto">
-        <Button variant="ghost" onClick={logout} className="w-full justify-start group-data-[collapsible=icon]:justify-center">
-            <LogOut className="h-4 w-4" />
-            <span className="group-data-[collapsible=icon]:hidden ml-2">Logout</span>
-        </Button>
+      <SidebarFooter className="p-2 mt-auto">
+         <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="w-full justify-start h-auto p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:aspect-square">
+                 <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.photoURL ?? undefined} alt={user?.displayName ?? 'User'} />
+                      <AvatarFallback>{getInitials(user?.displayName)}</AvatarFallback>
+                    </Avatar>
+                    <div className="text-left group-data-[collapsible=icon]:hidden">
+                      <p className="text-sm font-medium truncate">{user?.displayName ?? 'Welcome'}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                    </div>
+                  </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 mb-2" align="end" forceMount>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{user?.displayName}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    {user?.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/profile"><User className="mr-2 h-4 w-4" />Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled><Settings className="mr-2 h-4 w-4" />Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
     </Sidebar>
   );
