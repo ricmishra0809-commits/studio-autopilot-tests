@@ -13,6 +13,9 @@ export default async function AiAgentPage() {
   }
 
   const deviceNames = Object.keys(devices);
+  
+  // Add a default option
+  const supportedDevices = ["", ...deviceNames];
 
-  return <AIAgentForm runAgent={runAgent} supportedDevices={deviceNames} />;
+  return <AIAgentForm runAgent={runAgent} supportedDevices={supportedDevices} />;
 }

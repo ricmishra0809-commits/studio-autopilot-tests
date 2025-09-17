@@ -108,7 +108,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                         <SelectContent>
                           <ScrollArea className="h-72">
                             {supportedDevices.map(device => (
-                              <SelectItem key={device} value={device}>{device}</SelectItem>
+                              <SelectItem key={device} value={device}>{device || 'Default (Desktop)'}</SelectItem>
                             ))}
                           </ScrollArea>
                         </SelectContent>
