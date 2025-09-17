@@ -120,38 +120,51 @@ export function AppSidebar() {
           {navItems.map((section) => (
             <Collapsible key={section.title} className="w-full" defaultOpen={section.defaultOpen || section.links.some(link => isLinkActive(link.href))}>
                 <CollapsibleTrigger asChild>
-                <div className='w-full'>
-                    <SidebarMenuButton 
-                    className="justify-between group-data-[collapsible=icon]:justify-center"
-                    tooltip={{children: section.title}}
-                    variant='ghost'
-                    >
-                    <div className="flex items-center gap-2">
-                        {section.icon}
-                        <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
-                    </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
-                    </SidebarMenuButton>
-                </div>
+                  <div className='w-full'>
+                      <SidebarMenuButton 
+                        className="justify-between group-data-[collapsible=icon]:justify-center"
+                        tooltip={{children: section.title}}
+                        variant='ghost'
+                        asChild
+                      >
+                        {section.links.length === 1 ? (
+                          <Link href={section.links[0].href}>
+                            <div className="flex items-center gap-2">
+                                {section.icon}
+                                <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
+                            </div>
+                            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
+                          </Link>
+                        ) : (
+                          <div>
+                             <div className="flex items-center gap-2">
+                                {section.icon}
+                                <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
+                            </div>
+                            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
+                          </div>
+                        )}
+                      </SidebarMenuButton>
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
-                <SidebarMenuSub>
-                    {section.links.map((link) => (
-                      <SidebarMenuSubItem key={link.href}>
-                         <Link
-                          href={link.href}
-                          className={cn(
-                            sidebarMenuSubButtonVariants({ size: 'md' }),
-                            'w-full',
-                            isLinkActive(link.href) &&
-                              'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
-                          )}
-                        >
-                          <span>{link.label}</span>
-                        </Link>
-                      </SidebarMenuSubItem>
-                    ))}
-                </SidebarMenuSub>
+                  <SidebarMenuSub>
+                      {section.links.map((link) => (
+                        <SidebarMenuSubItem key={link.href}>
+                          <Link
+                            href={link.href}
+                            className={cn(
+                              sidebarMenuSubButtonVariants({ size: 'md' }),
+                              'w-full',
+                              isLinkActive(link.href) &&
+                                'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
+                            )}
+                          >
+                            <span>{link.label}</span>
+                          </Link>
+                        </SidebarMenuSubItem>
+                      ))}
+                  </SidebarMenuSub>
                 </CollapsibleContent>
             </Collapsible>
           ))}
