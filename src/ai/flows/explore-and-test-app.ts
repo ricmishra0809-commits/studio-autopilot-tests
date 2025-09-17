@@ -34,7 +34,7 @@ export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<
 
 DOM:
 ${dom}`,
-        model: 'googleai/gemini-2.5-flash',
+        model: 'google/gemini-flash-1.5',
         });
         // Validate the new selector before returning
         const newSelector = result.text.trim();
@@ -144,7 +144,7 @@ ${dom}`,
             { role: 'user', content: `You are a UI/UX expert. Analyze the following screenshot and answer the question. Be concise. Question: ${query}`},
             { role: 'user', content: { media: { url: screenshot } } },
         ],
-        model: 'googleai/gemini-2.5-flash',
+        model: 'google/gemini-flash-1.5',
         });
         return result.text;
     }
@@ -173,7 +173,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
                 { role: 'user', content: { media: { url: screenshot } } },
             ],
             tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool, findAlternativeSelector, analyzeVisualsTool],
-            model: 'googleai/gemini-2.5-flash',
+            model: 'google/gemini-flash-1.5',
         });
         
         const action = agentResponse.toolRequest?.tool.name || 'observe';
