@@ -1,6 +1,5 @@
-import {genkit} from 'genkit';
-import {googleAI, geminiPro} from '@genkit-ai/googleai';
-import {defineModel} from 'genkit/models';
+import {genkit, defineModel} from 'genkit';
+import {googleAI, gemini15Pro} from '@genkit-ai/googleai';
 import {z} from 'zod';
 
 // Define a custom OpenAI-compatible model using the googleAI plugin's machinery
@@ -8,7 +7,7 @@ const openRouterModel = defineModel(
   {
     name: 'google/gemini-flash-1.5',
     label: 'OpenRouter - Gemini Flash 1.5',
-    configSchema: geminiPro.configSchema,
+    configSchema: gemini15Pro.configSchema,
     supportedCallTypes: ['generate'],
   },
   async (request, config) => {
