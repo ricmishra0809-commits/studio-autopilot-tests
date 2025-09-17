@@ -214,14 +214,12 @@ export const docsContent = {
 };
 
 export const cicdIntegrationContent = {
-  intro: `To run the AI Test Agent automatically in a CI/CD pipeline (like GitHub Actions, Jenkins, etc.), you can't use the web UI. Instead, you need to trigger the underlying server action using an HTTP POST request.
-
-  Next.js automatically creates an endpoint for each server action. You can call this endpoint from any script or command-line tool.`,
+  intro: `Next.js automatically creates an endpoint for each server action. You can call this endpoint from any script or command-line tool, like n8n's HTTP Request node.`,
   curl: `### Using cURL
 
 You can use a simple cURL command to trigger the agent. This is useful for shell scripts in any CI/CD environment.
 
-Replace \`YOUR_APP_URL\` with the deployed URL of this application.
+Replace \`YOUR_APP_URL\` with the deployed URL of this application, and ensure the \`Next-Action\` ID is up-to-date.
 
 \`\`\`bash
 curl -X POST YOUR_APP_URL/ai-agent \\
@@ -231,7 +229,6 @@ curl -X POST YOUR_APP_URL/ai-agent \\
 \`\`\`
 
 **Important Notes:**
-- The \`Next-Action\` header contains a unique ID for the server action. You can find the correct ID by inspecting the network requests in your browser's developer tools when you run the agent from the UI.
 - The \`--data\` payload is a JSON array containing a single object with the \`url\` and \`task\` for the agent.`,
   node: `### Using a Node.js Script
 
@@ -241,7 +238,8 @@ For more complex integrations, you can use a Node.js script with \`node-fetch\`.
 const fetch = require('node-fetch');
 
 async function runAIAgent(appUrl, testUrl, testTask) {
-  const nextActionId = '0113b2073981884633e3831385935f4922b9318c'; // Replace with your action ID
+  // WARNING: This ID can change between builds!
+  const nextActionId = '0113b2073981884633e3831385935f4922b9318c'; 
   const endpoint = \`\${appUrl}/ai-agent\`;
 
   try {
@@ -258,15 +256,11 @@ async function runAIAgent(appUrl, testUrl, testTask) {
       throw new Error(\`HTTP error! status: \${response.status}\`);
     }
 
-    // The response from a server action is a bit complex.
-    // This is a simplified way to get the result.
     const resultText = await response.text();
     console.log('AI Agent Result:', resultText);
 
-    // In a real scenario, you would parse this result to determine
-    // if the test passed or failed.
-    
-    // For now, we'll just check if the summary exists.
+    // In a real pipeline, you would parse this result to determine
+    // if the test passed or failed before proceeding.
     if (resultText.includes('summary')) {
         console.log('Test run completed successfully.');
         process.exit(0); // Success
