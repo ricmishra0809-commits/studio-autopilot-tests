@@ -106,18 +106,16 @@ export function AppSidebar() {
           {navItems.map((section) => (
             section.title === 'Overview' ? (
                 <SidebarMenuItem key={section.title}>
-                  <Link href={section.links[0].href} passHref legacyBehavior>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isLinkActive(section.links[0].href)}
-                      tooltip={{children: section.links[0].label}}
-                    >
-                      <a>
-                        {section.links[0].icon}
-                        <span>{section.links[0].label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </Link>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isLinkActive(section.links[0].href)}
+                    tooltip={{children: section.links[0].label}}
+                  >
+                    <Link href={section.links[0].href}>
+                      {section.links[0].icon}
+                      <span>{section.links[0].label}</span>
+                    </Link>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ) : (
                 <Collapsible key={section.title} className="w-full" defaultOpen={section.links.some(link => isLinkActive(link.href))}>
@@ -139,14 +137,12 @@ export function AppSidebar() {
                     <SidebarMenuSub>
                       {section.links.map((link) => (
                         <SidebarMenuSubItem key={link.href}>
-                          <Link href={link.href} passHref legacyBehavior>
-                            <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
-                              <a>
-                                {link.icon}
-                                <span>{link.label}</span>
-                              </a>
-                            </SidebarMenuSubButton>
-                          </Link>
+                          <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
+                            <Link href={link.href}>
+                              {link.icon}
+                              <span>{link.label}</span>
+                            </Link>
+                          </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
