@@ -80,7 +80,7 @@ export default function Home() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
-          <Card key={feature.href} className="flex flex-col overflow-hidden group hover:shadow-lg transition-shadow duration-300 hover:-translate-y-1">
+          <Card key={feature.href} className="flex flex-col overflow-hidden group transition-all duration-300 hover:shadow-xl hover:border-primary/50 hover:-translate-y-1.5">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <CardTitle className="text-xl font-headline">{feature.title}</CardTitle>
@@ -89,9 +89,9 @@ export default function Home() {
               <CardDescription>{feature.description}</CardDescription>
             </CardHeader>
             <CardContent className="mt-auto">
-              <Button asChild variant="secondary" className="w-full group-hover:bg-accent group-hover:text-accent-foreground">
+              <Button asChild variant="secondary" className="w-full group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
                 <Link href={feature.href}>
-                  Go to {feature.title} <ArrowRight className="ml-2 h-4 w-4" />
+                  Go to {feature.title} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </CardContent>

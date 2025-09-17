@@ -13,7 +13,6 @@ import {
   Sparkles,
   ClipboardCheck,
   ShieldCheck,
-  ChevronDown,
   ChevronRight,
   Bot,
   Terminal,
@@ -36,8 +35,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import React from 'react';
 
 type NavLink = {
@@ -50,6 +47,7 @@ type NavSection = {
   title: string;
   icon: React.ReactNode;
   links: NavLink[];
+  defaultOpen?: boolean;
 };
 
 export const navItems: NavSection[] = [
@@ -67,16 +65,7 @@ export const navItems: NavSection[] = [
       { href: '/test-strategy', label: 'Test Strategy', icon: <FileText className="h-4 w-4" /> },
       { href: '/test-scripts', label: 'Test Scripts', icon: <FileCode2 className="h-4 w-4" /> },
     ],
-  },
-  {
-    title: 'Artifacts',
-    icon: <Github className="h-4 w-4" />,
-    links: [
-      { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
-      { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4 w-4" /> },
-      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4 w-4" /> },
-      { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
-    ],
+    defaultOpen: true,
   },
   {
     title: 'AI Tools',
@@ -86,6 +75,17 @@ export const navItems: NavSection[] = [
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck className="h-4 w-4" /> },
       { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
       { href: '/test-video', label: 'Test Video Gen', icon: <Video className="h-4 w-4" /> },
+    ],
+    defaultOpen: true,
+  },
+  {
+    title: 'Artifacts',
+    icon: <Github className="h-4 w-4" />,
+    links: [
+      { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
+      { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4 w-4" /> },
+      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4 w-4" /> },
+      { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
     ],
   },
 ];
@@ -98,7 +98,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="hidden md:flex md:flex-col">
+    <Sidebar collapsible="icon" className="hidden md:flex md:flex-col bg-sidebar text-sidebar-foreground">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-2">
           <Rocket className="w-8 h-8 text-primary" />
@@ -116,20 +116,22 @@ export function AppSidebar() {
                     asChild
                     isActive={isLinkActive(section.links[0].href)}
                     tooltip={{children: section.links[0].label}}
+                    variant='ghost'
                   >
                     <Link href={section.links[0].href}>
                       {section.links[0].icon}
-                      <span>{section.links[0].label}</span>
+                      <span className="group-data-[collapsible=icon]:hidden">{section.links[0].label}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ) : (
-                <Collapsible key={section.title} className="w-full" defaultOpen={section.links.some(link => isLinkActive(link.href))}>
+                <Collapsible key={section.title} className="w-full" defaultOpen={section.defaultOpen || section.links.some(link => isLinkActive(link.href))}>
                   <CollapsibleTrigger asChild>
                     <div className='w-full'>
                       <SidebarMenuButton 
                         className="justify-between group-data-[collapsible=icon]:justify-center"
                         tooltip={{children: section.title}}
+                        variant='ghost'
                         >
                         <div className="flex items-center gap-2">
                           {section.icon}
@@ -145,7 +147,7 @@ export function AppSidebar() {
                         <SidebarMenuSubItem key={link.href}>
                           <SidebarMenuSubButton asChild isActive={isLinkActive(link.href)}>
                             <Link href={link.href}>
-                              {link.icon}
+                              {/* {link.icon} */}
                               <span>{link.label}</span>
                             </Link>
                           </SidebarMenuSubButton>

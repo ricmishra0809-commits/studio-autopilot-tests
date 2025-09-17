@@ -2,6 +2,17 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { AppShell } from '@/components/layout/app-shell';
+import { Inter, Lexend } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const lexend = Lexend({
+  subsets: ['latin'],
+  variable: '--font-lexend',
+});
 
 export const metadata: Metadata = {
   title: 'Firebase AutoPilot',
@@ -14,12 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${lexend.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Fira+Code&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap"
           rel="stylesheet"
         />
       </head>

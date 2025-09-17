@@ -1,7 +1,6 @@
-{ pkgs ? import <nixpkgs> {} }:
-
 pkgs.mkShell {
   buildInputs = [
+    pkgs.nodejs
     pkgs.gtk3
     pkgs.cairo
     pkgs.pango
@@ -27,5 +26,20 @@ pkgs.mkShell {
     pkgs.xorg.libX11
     pkgs.xorg.libxcb
     pkgs.dbus
+
+    # Playwright dependencies
+    pkgs.nss
+    pkgs.nspr
+    pkgs.atk
+    pkgs.at-spi2-atk
+    pkgs.xorg.libXcomposite
+    pkgs.xorg.libXdamage
+    pkgs.xorg.libXfixes
+    pkgs.xorg.libXrandr
+    pkgs.gbm
+    pkgs.xcb-util
+    pkgs.xkbcommon
+    pkgs.alsaLib
+    pkgs.libudev
   ];
 }
