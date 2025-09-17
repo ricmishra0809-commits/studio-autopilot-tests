@@ -76,11 +76,11 @@ export const navItems: NavSection[] = [
   },
   {
     title: 'AI Tools',
-    icon: <Sparkles className="h-4 w-4" />,
+    icon: <Bot className="h-4 w-4" />,
     links: [
+      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck className="h-4 w-4" /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck className="h-4 w-4" /> },
-      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot className="h-4 w-4" /> },
       { href: '/test-video', label: 'Test Video Gen', icon: <Video className="h-4 w-4" /> },
     ],
     defaultOpen: true,
@@ -120,33 +120,35 @@ export function AppSidebar() {
           {navItems.map((section) => (
             <Collapsible key={section.title} className="w-full" defaultOpen={section.defaultOpen || section.links.some(link => isLinkActive(link.href))}>
                 <CollapsibleTrigger asChild>
-                  <div className='w-full'>
-                      <SidebarMenuButton 
-                        className="justify-between group-data-[collapsible=icon]:justify-center"
-                        tooltip={{children: section.title}}
-                        variant='ghost'
-                        asChild
-                      >
-                        {section.links.length === 1 ? (
-                          <Link href={section.links[0].href}>
-                            <div className="flex items-center gap-2">
-                                {section.icon}
-                                <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
-                            </div>
-                            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
-                          </Link>
-                        ) : (
-                          <div>
-                             <div className="flex items-center gap-2">
-                                {section.icon}
-                                <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
-                            </div>
-                            <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
-                          </div>
-                        )}
-                      </SidebarMenuButton>
-                  </div>
+                  <SidebarMenuButton 
+                    className="justify-between group-data-[collapsible=icon]:hidden"
+                    variant='ghost'
+                  >
+                      <div className="flex items-center gap-2">
+                          {section.icon}
+                          <span className='group-data-[collapsible=icon]:hidden'>{section.title}</span>
+                      </div>
+                      <ChevronRight className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-90 group-data-[collapsible=icon]:hidden" />
+                  </SidebarMenuButton>
                 </CollapsibleTrigger>
+
+                {/* Collapsed View Icons */}
+                 <div className="hidden group-data-[collapsible=icon]:flex flex-col gap-1">
+                    {section.links.map((link) => (
+                        <Link href={link.href} key={link.href}>
+                             <Button
+                                variant={isLinkActive(link.href) ? 'secondary' : 'ghost'}
+                                size="icon"
+                                className="w-9 h-9"
+                                aria-label={link.label}
+                                asChild
+                            >
+                                <span>{link.icon}</span>
+                            </Button>
+                        </Link>
+                    ))}
+                 </div>
+
                 <CollapsibleContent className="group-data-[collapsible=icon]:hidden">
                   <SidebarMenuSub>
                       {section.links.map((link) => (
@@ -160,7 +162,7 @@ export function AppSidebar() {
                                 'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
                             )}
                           >
-                            <span>{link.label}</span>
+                            <span className='truncate'>{link.label}</span>
                           </Link>
                         </SidebarMenuSubItem>
                       ))}
