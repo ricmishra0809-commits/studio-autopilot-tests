@@ -1,9 +1,13 @@
-import {genkit, defineModel} from 'genkit';
+import {genkit} from 'genkit';
 import {googleAI, gemini15Pro} from '@genkit-ai/googleai';
 import {z} from 'zod';
 
+export const ai = genkit({
+  plugins: [googleAI()],
+});
+
 // Define a custom OpenAI-compatible model using the googleAI plugin's machinery
-const openRouterModel = defineModel(
+const openRouterModel = ai.defineModel(
   {
     name: 'google/gemini-flash-1.5',
     label: 'OpenRouter - Gemini Flash 1.5',
@@ -35,7 +39,8 @@ const openRouterModel = defineModel(
   }
 );
 
-export const ai = genkit({
-  plugins: [googleAI()],
-  model: openRouterModel,
-});
+
+// We are setting the model on the global `ai` object after it has been defined.
+// This is a bit of a workaround because the model itself uses `ai.generate`.
+// @ts-ignore
+ai.model = openRouterModel;
