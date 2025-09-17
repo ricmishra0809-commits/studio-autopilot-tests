@@ -22,7 +22,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bot, Video } from 'lucide-react';
-import type { ExploreAndTestAppOutput } from '@/ai/flows/explore-and-test-app';
+import type { ExploreAndTestAppOutput } from '@/ai/schemas/explore-and-test-app';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -222,3 +222,5 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
     </div>
   );
 }
+
+    

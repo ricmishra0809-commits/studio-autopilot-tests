@@ -3,37 +3,14 @@
  * @fileOverview An AI agent that explores a web application and tests it.
  *
  * - exploreAndTestApp - A function that initiates the AI testing agent.
- * - ExploreAndTestAppInput - The input type for the exploreAndTestApp function.
- * - ExploreAndTestAppOutput - The return type for the exploreAndTestApp function.
  */
 
 import { ai } from '@/ai/genkit';
 import { PlaywrightService } from '@/services/playwright';
 import { z } from 'genkit';
+import type { ExploreAndTestAppInput, ExploreAndTestAppOutput } from '@/ai/schemas/explore-and-test-app';
+import { ExploreAndTestAppInputSchema } from '@/ai/schemas/explore-and-test-app';
 
-export const ExploreAndTestAppInputSchema = z.object({
-  url: z.string().url().describe('The URL of the web application to test.'),
-  task: z.string().describe('The high-level task for the AI agent to perform.'),
-  device: z.string().optional().describe('The device to emulate (e.g., "iPhone 13", "Pixel 5").'),
-});
-export type ExploreAndTestAppInput = z.infer<
-  typeof ExploreAndTestAppInputSchema
->;
-
-export const ExploreAndTestAppOutputSchema = z.object({
-  summary: z.string().describe('A summary of the testing session.'),
-  steps: z.array(
-    z.object({
-      action: z.string().describe('The action taken by the agent.'),
-      screenshot: z.string().describe('A base64 encoded screenshot of the page after the action. As a data URI.'),
-      observation: z.string().describe('The agent\'s observation after the action.'),
-    })
-  ),
-  video: z.string().optional().describe('A base64 encoded video of the test session. As a data URI.'),
-});
-export type ExploreAndTestAppOutput = z.infer<
-  typeof ExploreAndTestAppOutputSchema
->;
 
 export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<ExploreAndTestAppOutput> {
     const playwrightService = await PlaywrightService.getInstance(input.device);
@@ -279,3 +256,5 @@ ${steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join
         video: video || undefined,
     };
 }
+
+    
