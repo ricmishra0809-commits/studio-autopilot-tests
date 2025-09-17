@@ -33,6 +33,39 @@ export type ExploreAndTestAppOutput = z.infer<
   typeof ExploreAndTestAppOutputSchema
 >;
 
+// Self-healing tool
+const findAlternativeSelector = ai.defineTool(
+  {
+    name: 'findAlternativeSelector',
+    description: 'Finds an alternative CSS selector for an element if the original selector fails. Use this if you believe the element exists but the selector is outdated.',
+    inputSchema: z.object({
+      originalSelector: z.string().describe('The original, failing CSS selector.'),
+      elementDescription: z.string().describe('A description of the element you are trying to find (e.g., "a login button", "the main heading").'),
+    }),
+    outputSchema: z.string().describe('A new, valid CSS selector, or an empty string if no alternative was found.'),
+  },
+  async ({ originalSelector, elementDescription }) => {
+    const dom = await playwrightService.getPageContent();
+    const result = await ai.generate({
+      prompt: `Analyze the following HTML DOM. Find a robust CSS selector for an element described as "${elementDescription}". The old selector was "${originalSelector}". Return only the new selector, or an empty string if you cannot find a suitable one.
+
+DOM:
+${dom}`,
+      model: 'googleai/gemini-2.5-flash',
+    });
+    // Validate the new selector before returning
+    const newSelector = result.text.trim();
+    if (newSelector) {
+        const isVisible = await playwrightService.isVisible(newSelector);
+        if (isVisible) {
+            return newSelector;
+        }
+    }
+    return '';
+  }
+);
+
+
 const clickTool = ai.defineTool(
   {
     name: 'clickElement',
@@ -116,14 +149,14 @@ export async function exploreAndTestApp(input: ExploreAndTestAppInput): Promise<
     await playwrightService.goTo(input.url);
 
     let steps = [];
-    let cumulativePrompt = `You are an AI Test Agent. Your goal is to test a web application by exploring it and trying to complete a task.
-You can see the screen and interact with it using the provided tools.
+    let cumulativePrompt = `You are an AI Test Agent with Self-Healing capabilities. Your goal is to test a web application by exploring it to complete a task.
+You can see the screen and interact with it using the provided tools. If a selector for an element is not working, you can use the 'findAlternativeSelector' tool to attempt to self-heal the test.
 
 Your task is: ${input.task}
 The current URL is: ${input.url}
 
 Analyze the screenshot and decide what action to take next to accomplish the task.
-Think step-by-step. What is the most logical next action?
+Think step-by-step. What is the most logical next action? If a previous action failed, consider why and try to recover.
 `;
 
     for (let i = 0; i < 7; i++) { // Limit to 7 steps for now
@@ -134,7 +167,7 @@ Think step-by-step. What is the most logical next action?
                 { role: 'user', content: cumulativePrompt},
                 { role: 'user', content: { media: { url: screenshot } } },
             ],
-            tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool],
+            tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool, findAlternativeSelector],
             model: 'googleai/gemini-2.5-flash',
         });
         
@@ -159,16 +192,26 @@ Think step-by-step. What is the most logical next action?
             });
             break; // Agent decided to stop
         } else {
-          const toolResponse = await agentResponse.runTool();
-          if(toolResponse) {
-            toolResult = `Tool Output: ${toolResponse}`;
-            observation += `\n${toolResult}`;
+          try {
+            const toolResponse = await agentResponse.runTool();
+            if(toolResponse) {
+              toolResult = `Tool Output: ${toolResponse}`;
+              observation += `\n${toolResult}`;
+            }
+            steps.push({
+              action: `${action}(${JSON.stringify(actionInput) || ''})`,
+              screenshot,
+              observation: observation,
+            });
+          } catch(e: any) {
+             toolResult = `Tool Error: ${e.message}. The selector might be invalid. I will try to find an alternative selector.`;
+             observation += `\n${toolResult}`;
+             steps.push({
+                action: `${action}(${JSON.stringify(actionInput) || ''}) - FAILED`,
+                screenshot,
+                observation,
+             })
           }
-           steps.push({
-             action: `${action}(${JSON.stringify(actionInput) || ''})`,
-             screenshot,
-             observation: observation,
-           });
         }
         
         cumulativePrompt += `
@@ -177,7 +220,7 @@ Think step-by-step. What is the most logical next action?
         - Action: ${action} with input ${JSON.stringify(actionInput)}
         - Result: ${toolResult || 'No output.'}
         
-        Now, analyze the new screenshot and decide the next action.
+        Now, analyze the new screenshot and decide the next action. If the previous step failed, consider using 'findAlternativeSelector' to self-heal.
         `;
     }
 
@@ -192,3 +235,5 @@ Think step-by-step. What is the most logical next action?
         steps: steps,
     };
 }
+
+    
