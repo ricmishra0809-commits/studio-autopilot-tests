@@ -10,6 +10,9 @@ import {
   Rocket,
   Bot,
   Terminal,
+  ShieldCheck,
+  ClipboardCheck,
+  Video,
 } from 'lucide-react';
 import {
   Card,
@@ -34,22 +37,16 @@ const features = [
     icon: <FileCode2 className="w-8 h-8 text-primary" />,
   },
   {
-    title: 'n8n Workflow',
-    description: 'Get a ready-to-use n8n workflow for test automation.',
-    href: '/n8n-workflow',
-    icon: <Workflow className="w-8 h-8 text-primary" />,
+    title: 'Security Rules',
+    description: 'Get AI-powered suggestions to improve your Firestore security.',
+    href: '/security-rules',
+    icon: <ShieldCheck className="w-8 h-8 text-primary" />,
   },
   {
-    title: 'CI/CD Config',
-    description: 'Bootstrap your CI/CD pipeline with a GitHub Actions config.',
-    href: '/cicd-config',
-    icon: <Github className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: 'CI/CD Integration',
-    description: 'Learn how to trigger the AI agent from your CI/CD pipeline.',
-    href: '/cicd-integration',
-    icon: <Terminal className="w-8 h-8 text-primary" />,
+    title: 'Summarize CI',
+    description: 'Paste raw CI logs to get a clean, AI-generated summary.',
+    href: '/summarize-ci',
+    icon: <ClipboardCheck className="w-8 h-8 text-primary" />,
   },
   {
     title: 'AI Test Agent',
@@ -57,13 +54,19 @@ const features = [
     href: '/ai-agent',
     icon: <Bot className="w-8 h-8 text-primary" />,
   },
+  {
+    title: 'Test Video Gen',
+    description: 'Generate a video clip of a test scenario using AI.',
+    href: '/test-video',
+    icon: <Video className="w-8 h-8 text-primary" />,
+  },
 ];
 
 export default function Home() {
   return (
     <div className="space-y-12">
       <div className="relative rounded-xl overflow-hidden bg-card p-8 border">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent dark:from-black/20" />
         <div className="relative z-10 flex flex-col items-center text-center">
             <Rocket className="w-24 h-24 text-primary mb-4 animate-bounce" />
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 font-headline">
