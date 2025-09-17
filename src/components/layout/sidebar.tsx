@@ -30,8 +30,8 @@ import {
   SidebarFooter,
   SidebarMenuSub,
   SidebarMenuSubItem,
-  sidebarMenuButtonVariants,
-  sidebarMenuSubButtonVariants
+  sidebarMenuSubButtonVariants,
+  sidebarMenuSubItemVariants,
 } from '@/components/ui/sidebar';
 import {
   Collapsible,
@@ -138,9 +138,17 @@ export function AppSidebar() {
                 <SidebarMenuSub>
                     {section.links.map((link) => (
                     <SidebarMenuSubItem key={link.href}>
-                        <Link href={link.href} className={cn(sidebarMenuSubButtonVariants({ size: 'md' }), 'w-full')} data-active={isLinkActive(link.href)}>
-                            <span>{link.label}</span>
-                        </Link>
+                      <Link
+                        href={link.href}
+                        className={cn(
+                          sidebarMenuSubItemVariants({ size: 'md' }),
+                          'w-full',
+                          isLinkActive(link.href) &&
+                            'bg-sidebar-accent/80 text-sidebar-accent-foreground font-medium'
+                        )}
+                      >
+                        <span>{link.label}</span>
+                      </Link>
                     </SidebarMenuSubItem>
                     ))}
                 </SidebarMenuSub>

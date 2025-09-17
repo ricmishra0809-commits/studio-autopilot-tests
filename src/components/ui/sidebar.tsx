@@ -701,6 +701,21 @@ const SidebarMenuSub = React.forwardRef<
 ))
 SidebarMenuSub.displayName = "SidebarMenuSub"
 
+const sidebarMenuSubItemVariants = cva(
+  "flex h-8 min-w-0 w-full items-center gap-2 overflow-hidden rounded-md px-2.5 text-left text-sidebar-foreground/80 outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent/70 disabled:pointer-events-none disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 group-data-[collapsible=icon]:hidden",
+  {
+    variants: {
+      size: {
+        sm: "text-xs",
+        md: "text-sm",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+)
+
 const SidebarMenuSubItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
@@ -766,11 +781,10 @@ export {
   SidebarMenuSubButton,
   sidebarMenuSubButtonVariants,
   SidebarMenuSubItem,
+  sidebarMenuSubItemVariants,
   SidebarProvider,
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
 }
-
-    

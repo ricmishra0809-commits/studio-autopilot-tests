@@ -9,6 +9,7 @@ import {
   Video,
   Bot,
   Workflow,
+  Terminal,
 } from 'lucide-react';
 import {
   Card,
@@ -62,6 +63,12 @@ const features = [
     href: '/test-video',
     icon: <Video className="w-6 h-6 text-foreground/80" />,
   },
+  {
+    title: 'CI/CD Integration',
+    description: 'Trigger the AI Test Agent from your CI/CD pipeline.',
+    href: '/cicd-integration',
+    icon: <Terminal className="w-6 h-6 text-foreground/80" />,
+  }
 ];
 
 export default function DashboardPage() {
