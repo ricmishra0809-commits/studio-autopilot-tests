@@ -230,6 +230,8 @@ Think step-by-step. What is the most logical next action? If a previous action f
 
     const performance = await playwrightService.getPagePerformanceMetrics();
     const dom = await playwrightService.getPageContent();
+    const video = await playwrightService.closeAndGetVideo();
+
     const finalAnalysisPrompt = `Based on the following steps and observations, summarize the testing session for the task: "${input.task}".
 
 Also, provide a brief "Performance and Security Insights" section.
@@ -248,13 +250,9 @@ ${steps.map((s, i) => `Step ${i+1}: ${s.observation}\nAction: ${s.action}`).join
         prompt: finalAnalysisPrompt
     });
 
-    const video = await playwrightService.closeAndGetVideo();
-
     return {
         summary: summary.text,
         steps: steps,
         video: video || undefined,
     };
 }
-
-    
