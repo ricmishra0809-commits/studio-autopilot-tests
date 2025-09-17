@@ -16,10 +16,12 @@ This document outlines the technical architecture, stack, and key components of 
     *   **Why:** A powerful open-source framework for building production-ready AI-powered features. It simplifies interactions with models like Gemini and allows for creating robust "flows" with tools.
 *   **Backend & Auth:** [Firebase](https://firebase.google.com/)
     *   **Authentication:** Firebase Auth for secure user login and signup.
-    *   **Database:** Firestore (implied, for potential future use).
+    *   **Database:** Firestore (for storing test results, templates, etc.).
     *   **Hosting:** Firebase Hosting.
 *   **Browser Automation:** [Playwright](https://playwright.dev/)
-    *   **Why:** Used by the AI Test Agent to control a real browser (Chromium) for E2E testing. It's robust, fast, and feature-rich.
+    *   **Why:** Used by the AI Test Agent to control real browsers (Chromium, Firefox, WebKit) for E2E testing. It's robust, fast, and feature-rich.
+*   **Visual Comparison:** [Pixel-diff libraries or AI Models]
+    *   **Why:** For comparing screenshots and highlighting visual regressions.
 
 ## 2. Project Structure
 
@@ -37,7 +39,7 @@ This document outlines the technical architecture, stack, and key components of 
 │   │   └── page.tsx            # Landing page
 │   │
 │   ├── ai/                     # All Genkit AI-related code
-│   │   ├── flows/              # Genkit flows (e.g., generateTestStrategy)
+│   │   ├── flows/              # Genkit flows (e.g., exploreAndTestApp)
 │   │   ├── schemas/            # Zod schemas for flow inputs/outputs
 │   │   └── genkit.ts           # Genkit initialization
 │   │
@@ -59,7 +61,8 @@ This document outlines the technical architecture, stack, and key components of 
 │
 ├── docs/                     # Project documentation
 │   ├── APP_CONCEPT.md
-│   └── ...
+│   └── TECHNICAL_BLUEPRINT.md
+│   └── WORKFLOW.md
 │
 └── public/                   # Static assets
 ```
@@ -72,7 +75,7 @@ We heavily use Next.js Server Actions to handle form submissions and AI flow inv
 ### Genkit Flows & Tools
 All AI logic is encapsulated within Genkit flows.
 *   **Flows (`ai/flows/*.ts`):** A flow is a sequence of operations, often culminating in a call to an LLM. For example, `exploreAndTestApp` is a flow.
-*   **Tools:** Within a flow, we define "tools" that the LLM can decide to use. For the AI Test Agent, tools include `clickElement`, `fillInField`, etc. The LLM receives the state of the web page (via a screenshot) and decides which tool to use next to accomplish its task.
+*   **Tools:** Within a flow, we define "tools" that the LLM can decide to use. For the AI Test Agent, tools include `clickElement`, `fillInField`, `analyzeVisuals`, and a `findAlternativeSelector` tool for self-healing. The LLM receives the state of the web page (via a screenshot) and decides which tool to use next to accomplish its task.
 
 ### Playwright Service (`services/playwright.ts`)
 To prevent the AI agent from launching a new browser instance for every single action (which would be incredibly slow), we use a **singleton pattern**.
@@ -80,6 +83,7 @@ To prevent the AI agent from launching a new browser instance for every single a
 *   It exposes simple methods like `click(selector)`, `fill(selector, value)`, and `getPageAsDataUri()`.
 *   The Genkit tools for browser interaction call the methods on this singleton instance.
 *   When the session is over, it closes the browser and returns a path to the recorded video.
+*   This service will be extended to manage multiple browser types (Chrome, Firefox) for cross-browser testing.
 
 ### Authentication & Protected Routes
 *   **`auth-context.tsx`:** A React Context wraps the entire application, providing user state (`user`, `loading`).
