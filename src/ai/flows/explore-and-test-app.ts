@@ -179,6 +179,7 @@ You can see the screen and interact with it using the provided tools. If a selec
 
 Your task is: ${input.task}
 The current URL is: ${input.url}
+The emulated device is: ${input.device || 'Desktop'}
 
 Analyze the screenshot and decide what action to take next to accomplish the task.
 Think step-by-step. What is the most logical next action? If a previous action failed, consider why and try to recover.
