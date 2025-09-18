@@ -1,4 +1,3 @@
-
 {
   "name": "Studio AutoPilot CI/CD Pipeline",
   "nodes": [
@@ -14,8 +13,7 @@
       "position": [
         -180,
         320
-      ],
-      "webhookId": "a1b2c3d4-e5f6-7890-1234-abcdef123456"
+      ]
     },
     {
       "parameters": {
@@ -54,28 +52,6 @@
         260,
         320
       ]
-    },
-    {
-      "parameters": {
-        "authentication": "openApi",
-        "model": "openai/gpt-4o-mini",
-        "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise. Test output:\n\n{{$json[\"stdout\"]}}\n\n{{$json[\"stderr\"]}}",
-        "options": {}
-      },
-      "id": "4",
-      "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.openAiChat",
-      "typeVersion": 2.1,
-      "position": [
-        500,
-        500
-      ],
-      "credentials": {
-        "openApi": {
-          "id": "YOUR_OPENROUTER_CREDENTIALS_ID",
-          "name": "OpenRouter"
-        }
-      }
     },
     {
       "parameters": {
@@ -119,7 +95,7 @@
         "resource": "message",
         "operation": "post",
         "channel": "engineering-product-launch",
-        "text": "❌ CI run failed! Reason: {{$json.choices[0].message.content}}",
+        "text": "❌ CI run failed! Reason: {{$json.text}}",
         "otherOptions": {}
       },
       "id": "7",
@@ -134,6 +110,33 @@
         "slackApi": {
           "id": "YOUR_SLACK_CREDENTIALS_ID",
           "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "llm": {
+          "llm": {
+            "model": "gpt-4o-mini"
+          }
+        },
+        "prompt": {
+          "source": "expressions",
+          "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n\n{{ $('Run All Tests').item.json.stdout }}\n\n{{ $('Run All Tests').item.json.stderr }}"
+        }
+      },
+      "id": "4b971a81-3f19-4820-96f3-167812999496",
+      "name": "Summarize Failure with AI",
+      "type": "n8n-nodes-base.aiAgent",
+      "typeVersion": 1,
+      "position": [
+        500,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENROUTER_CREDENTIALS_ID",
+          "name": "OpenRouter"
         }
       }
     }
@@ -179,22 +182,22 @@
         ]
       ]
     },
-    "Summarize Failure with AI": {
+    "Deploy to Firebase": {
       "main": [
         [
           {
-            "node": "Notify Failure on Slack",
+            "node": "Notify Success on Slack",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Deploy to Firebase": {
+    "Summarize Failure with AI": {
       "main": [
         [
           {
-            "node": "Notify Success on Slack",
+            "node": "Notify Failure on Slack",
             "type": "main",
             "index": 0
           }
@@ -207,7 +210,7 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "1.0",
+  "versionId": "1.1",
   "triggerCount": 1,
   "tags": [
     "firebase",
