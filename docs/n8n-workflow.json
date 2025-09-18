@@ -1,147 +1,35 @@
 
 {
-  "name": "Studio AutoPilot CI/CD",
+  "name": "DEPRECATED - Use GitHub Actions Instead",
+  "notes": "This n8n workflow is deprecated due to configuration issues. Please use the GitHub Actions workflow defined in the 'CI/CD Config' page of the application. It is more reliable and easier to set up.",
   "nodes": [
     {
-      "parameters": {
-        "path": "a1b2c3d4e5",
-        "options": {}
-      },
-      "id": "e367c7c4-9a22-4876-9640-149013b52d43",
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
+      "parameters": {},
+      "id": "notice",
+      "name": "Notice: Use GitHub Actions",
+      "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         -180,
         320
-      ]
-    },
-    {
-      "parameters": {
-        "command": "firebase emulators:exec \"npm run test:all\"",
-        "options": {
-          "continueOnFail": true
-        }
-      },
-      "id": "e20b6e6b-0361-4a27-a068-197e4178385e",
-      "name": "Run All Tests",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 2,
-      "position": [
-        40,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "{{$json.exitCode}}",
-              "operation": "equal",
-              "value2": 0
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "f5b5f639-64a6-48c0-8a8b-1349f8a3c942",
-      "name": "Did Tests Pass?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        260,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "authentication": "oAuth2",
-        "channel": "engineering-product-launch",
-        "text": "❌ CI run failed! Check the n8n logs for details: {{ $('Run All Tests').item.json.stdout }}"
-      },
-      "id": "a9e1d8a3-2b4e-4c7b-8f1e-1234567890ab",
-      "name": "Notify Failure on Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 3,
-      "position": [
-        500,
-        420
       ],
-      "credentials": {
-        "slackOAuth2Api": {
-          "id": "YOUR_SLACK_CREDENTIALS_ID",
-          "name": "Slack account"
-        }
+      "data": {
+        "text": "This workflow is not recommended. Please go to the 'CI/CD Config' page in the app and follow the instructions for GitHub Actions."
       }
-    },
-    {
-      "parameters": {
-        "command": "firebase deploy --only hosting --token \"YOUR_FIREBASE_TOKEN\"",
-        "options": {}
-      },
-      "id": "3a9c5d0f-1e2a-4b6c-8d9e-0f1a2b3c4d5e",
-      "name": "Deploy to Firebase",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 2,
-      "position": [
-        500,
-        220
-      ]
     }
   ],
-  "connections": {
-    "e367c7c4-9a22-4876-9640-149013b52d43": {
-      "main": [
-        [
-          {
-            "node": "e20b6e6b-0361-4a27-a068-197e4178385e",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "e20b6e6b-0361-4a27-a068-197e4178385e": {
-      "main": [
-        [
-          {
-            "node": "f5b5f639-64a6-48c0-8a8b-1349f8a3c942",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "f5b5f639-64a6-48c0-8a8b-1349f8a3c942": {
-      "main": [
-        [
-          {
-            "node": "3a9c5d0f-1e2a-4b6c-8d9e-0f1a2b3c4d5e",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "a9e1d8a3-2b4e-4c7b-8f1e-1234567890ab",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
+  "connections": {},
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "5.0",
+  "versionId": "6.0",
   "triggerCount": 0,
   "tags": [
     "firebase",
     "ci/cd",
-    "automation"
+    "automation",
+    "deprecated"
   ]
 }
