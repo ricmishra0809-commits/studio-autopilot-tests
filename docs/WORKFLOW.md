@@ -2,61 +2,50 @@
 
 This document describes the complete, automated workflow that Studio AutoPilot enables. The goal is to move from a code change to a production deployment with minimal human intervention.
 
-The workflow can be implemented using the provided **n8n Workflow JSON** or the **GitHub Actions YAML config**.
+---
+
+## n8n Manual Setup Guide
+
+This is the recommended manual process for creating a reliable CI/CD pipeline in n8n.
+
+### Step 1: Webhook Trigger
+The workflow starts when it receives an HTTP request.
+1.  **Add Node:** Start with a blank workflow and add a `Webhook` node.
+2.  **Configuration:**
+    *   This node will have a "Test URL". You will use this URL in your GitHub repository's webhook settings.
+    *   The webhook should be configured to trigger on a `push` event to your `main` branch.
+
+### Step 2: Execute Tests
+This node runs all your automated tests in a safe, emulated environment.
+1.  **Add Node:** Add an `Execute Command` node after the Webhook.
+2.  **Configuration:**
+    *   **Command:** `firebase emulators:exec "npm run test:all"`
+    *   This command starts the Firebase emulators and runs the test script defined in your `package.json`.
+
+### Step 3: Check for Success (IF Node)
+This node checks if the tests passed or failed.
+1.  **Add Node:** Add an `IF` node.
+2.  **Configuration:**
+    *   **Value 1:** Use the expression `{{ $json.exitCode }}`. This gets the exit code from the previous command. An exit code of `0` means success.
+    *   **Operation:** `Equal`
+    *   **Value 2:** `0`
+
+### Step 4: Handle Failure (Slack Notification)
+If the tests fail (the `IF` node's `false` output), a notification is sent.
+1.  **Add Node:** From the `false` output of the `IF` node, add a `Slack` node.
+2.  **Configuration:**
+    *   **Credential:** Connect your Slack account. If you face issues, you may need to re-authenticate or create a new credential in n8n's "Credentials" section.
+    *   **Action:** Select `Message` > `Post`.
+    *   **Channel:** Choose your desired channel from the list (e.g., `engineering-product-launch`).
+    *   **Message Text:** `❌ CI run failed! Check n8n logs for details.`
+
+### Step 5: Handle Success (Deploy to Production)
+If all tests pass (the `IF` node's `true` output), the application is deployed.
+1.  **Add Node:** From the `true` output of the `IF` node, add another `Execute Command` node.
+2.  **Configuration:**
+    *   **Command:** `firebase deploy --only hosting --token "$FIREBASE_TOKEN"`
+    *   **Important:** You must add your Firebase CI token as an environment variable in n8n or pass it securely to this command. The recommended way is using n8n's credential store.
 
 ---
 
-### Step 1: Trigger (Code Push)
-
-*   **Action:** A developer pushes a new commit to the `main` branch of the project's GitHub repository.
-*   **Mechanism:** A webhook configured in the GitHub repository triggers the CI/CD pipeline (either n8n or GitHub Actions).
-
----
-
-### Step 2: Execution (Run Automated Tests)
-
-*   **Action:** The CI/CD server checks out the latest code and begins the testing process.
-*   **Mechanism:**
-    1.  It runs the command: `firebase emulators:exec "npm run test:all"`.
-    2.  This command starts the local Firebase Emulator Suite (for Auth, Firestore, Functions).
-    3.  It then executes all the test scripts defined in `package.json` (Jest unit tests, Playwright E2E tests, Firestore security rules tests).
-    4.  The tests run against the local emulators, not live production data. This is crucial for a safe and isolated testing environment.
-*   **Output:** The command outputs raw test results (pass/fail logs) to standard output (`stdout`) and returns an exit code (`0` for success, non-zero for failure).
-
----
-
-### Step 3: Analysis (AI-Powered Summarization)
-
-*   **Action:** The raw, often lengthy, test logs from the previous step are sent to an AI model for analysis.
-*   **Mechanism:**
-    1.  The CI/CD pipeline takes the `stdout` from the test execution step.
-    2.  It calls the **Summarize CI Results** AI flow (`summarizeCIResults`).
-    3.  The Genkit flow sends the logs to the Gemini LLM with a prompt asking it to provide a concise summary, identify which tests failed, and explain the potential reasons.
-*   **Output:** A clean, human-readable JSON object containing the summary and details of the test run.
-
----
-
-### Step 4: Notification (Report to Team)
-
-*   **Action:** The AI-generated summary is sent to the development team.
-*   **Mechanism:** The workflow integrates with a communication tool like Slack or an email service. It sends a message containing the test summary.
-    *   **Example Message:** "✅ CI run #123 passed. All 52 tests successful." or "❌ CI run #124 failed. 2 tests failed in `auth.spec.ts`. See details..."
-*   **Goal:** This keeps the entire team informed of the project's health without anyone needing to manually read through raw CI logs.
-
----
-
-### Step 5: Conditional Logic (Check for Success)
-
-*   **Action:** The workflow checks if all tests passed.
-*   **Mechanism:** It inspects the exit code from **Step 2**. If the exit code is `0`, it proceeds. If it's anything else, the "success" path is skipped, and the workflow ends.
-
----
-
-### Step 6: Deployment (Deploy to Production)
-
-*   **Action:** If all tests passed, the new version of the application is deployed automatically.
-*   **Mechanism:**
-    1.  The workflow executes the command: `firebase deploy --only hosting`.
-    2.  It uses a pre-configured `FIREBASE_TOKEN` (stored as a secret in the CI/CD environment) to authenticate with Firebase.
-    3.  The latest build of the Next.js application is deployed to Firebase Hosting.
-*   **Result:** The new code is live in production, fully tested and verified, completing the "hands-free" CI/CD loop.
+The workflow can also be implemented using the provided **GitHub Actions YAML config**, which is often more reliable for code-based CI/CD.
