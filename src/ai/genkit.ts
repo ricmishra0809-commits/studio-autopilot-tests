@@ -9,8 +9,8 @@ export const ai = genkit({
 // Define a custom OpenAI-compatible model using the googleAI plugin's machinery
 const openRouterModel = ai.defineModel(
   {
-    name: 'google/gemini-flash-1.5',
-    label: 'OpenRouter - Gemini Flash 1.5',
+    name: 'openai/gpt-4o-mini',
+    label: 'OpenRouter - GPT-4o Mini',
     configSchema: gemini15Pro.configSchema,
     supportedCallTypes: ['generate'],
   },
@@ -32,7 +32,7 @@ const openRouterModel = ai.defineModel(
       generationConfig: {
         ...request.config,
         // OpenRouter uses 'model' in the body, not the URL
-        model: 'google/gemini-flash-1.5',
+        model: 'openai/gpt-4o-mini',
       },
     };
     return (client as any).generate(newRequest);
