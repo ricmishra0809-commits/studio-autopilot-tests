@@ -1,5 +1,5 @@
 {
-  "name": "Studio AutoPilot CI/CD Pipeline",
+  "name": "Studio AutoPilot CI/CD Pipeline (Simplified)",
   "nodes": [
     {
       "parameters": {
@@ -95,7 +95,7 @@
         "resource": "message",
         "operation": "post",
         "channel": "engineering-product-launch",
-        "text": "❌ CI run failed! Reason: {{$json.text}}",
+        "text": "❌ CI run failed! Check the test logs for details.",
         "otherOptions": {}
       },
       "id": "7",
@@ -103,33 +103,13 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 3,
       "position": [
-        720,
+        500,
         500
       ],
       "credentials": {
         "slackApi": {
           "id": "YOUR_SLACK_CREDENTIALS_ID",
           "name": "Slack account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "model": "gpt-4o-mini",
-        "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n\n{{ $('Run All Tests').item.json.stdout }}\n\n{{ $('Run All Tests').item.json.stderr }}"
-      },
-      "id": "4b971a81-3f19-4820-96f3-167812999496",
-      "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.openAiChat",
-      "typeVersion": 1,
-      "position": [
-        500,
-        500
-      ],
-      "credentials": {
-        "openAiApi": {
-          "id": "YOUR_OPENROUTER_CREDENTIALS_ID",
-          "name": "OpenRouter"
         }
       }
     }
@@ -168,7 +148,7 @@
         ],
         [
           {
-            "node": "4b971a81-3f19-4820-96f3-167812999496",
+            "node": "7",
             "type": "main",
             "index": 0
           }
@@ -185,17 +165,6 @@
           }
         ]
       ]
-    },
-    "4b971a81-3f19-4820-96f3-167812999496": {
-      "main": [
-        [
-          {
-            "node": "7",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
@@ -203,12 +172,12 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "1.1",
-  "triggerCount": 1,
+  "versionId": "1.0",
+  "triggerCount": 0,
   "tags": [
     "firebase",
     "ci/cd",
-    "ai",
-    "automation"
+    "automation",
+    "simplified"
   ]
 }
