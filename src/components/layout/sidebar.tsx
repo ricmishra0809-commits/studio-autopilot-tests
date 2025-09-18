@@ -97,12 +97,11 @@ export const navItems: NavSection[] = [
     defaultOpen: true,
   },
   {
-    title: 'Artifacts',
-    icon: <Github className="h-4 w-4" />,
+    title: 'Automation',
+    icon: <Terminal className="h-4 w-4" />,
     links: [
-      { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4 w-4" /> },
-      { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4" /> },
-      { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal className="h-4" /> },
+      { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4" /> },
+      { href: '/cicd-config', label: 'GitHub Actions', icon: <Github className="h-4" /> },
       { href: '/docs', label: 'Documentation', icon: <BookOpenText className="h-4 w-4" /> },
     ],
   },
