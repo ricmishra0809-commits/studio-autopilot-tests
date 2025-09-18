@@ -117,13 +117,7 @@
     },
     {
       "parameters": {
-        "llm": {
-          "model": "openai:gpt-4o-mini"
-        },
-        "prompt": {
-          "source": "expressions",
-          "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n{{ $('Run All Tests').item.json.stdout }}\n\nError output (if any):\n{{ $('Run All Tests').item.json.stderr }}"
-        }
+        "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n{{ $('Run All Tests').item.json.stdout }}\n\nError output (if any):\n{{ $('Run All Tests').item.json.stderr }}"
       },
       "id": "b1c2d3e4-f5a6-4b7c-8d9e-abcdef123456",
       "name": "Summarize Failure with AI",
