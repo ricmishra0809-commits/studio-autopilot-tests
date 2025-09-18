@@ -10,7 +10,7 @@
       "id": "e367c7c4-9a22-4876-9640-149013b52d43",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1.1,
+      "typeVersion": 1,
       "position": [
         -180,
         320
@@ -71,11 +71,8 @@
     },
     {
       "parameters": {
-        "resource": "message",
-        "operation": "post",
         "channel": "engineering-product-launch",
-        "text": "✅ CI run passed! Deploying new version to production.",
-        "otherOptions": {}
+        "text": "✅ CI run passed! Deploying new version to production."
       },
       "id": "c0a5d0e2-a3c3-4d43-9b8e-6e54256c7a7a",
       "name": "Notify Success on Slack",
@@ -94,11 +91,8 @@
     },
     {
       "parameters": {
-        "resource": "message",
-        "operation": "post",
         "channel": "engineering-product-launch",
-        "text": "❌ CI run failed! AI Summary: {{$json.text}}",
-        "otherOptions": {}
+        "text": "❌ CI run failed! AI Summary: {{$json.text}}"
       },
       "id": "a9e1d8a3-2b4e-4c7b-8f1e-1234567890ab",
       "name": "Notify Failure on Slack",
@@ -121,7 +115,7 @@
       },
       "id": "b1c2d3e4-f5a6-4b7c-8d9e-abcdef123456",
       "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.basicLlmChain",
+      "type": "n8n-nodes-base.openAiChat",
       "typeVersion": 1,
       "position": [
         500,
