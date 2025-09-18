@@ -95,7 +95,7 @@
       "parameters": {
         "resource": "message",
         "operation": "post",
-        "channel": "general",
+        "channel": "engineering-product-launch",
         "text": "✅ CI run passed! Deploying new version to production.",
         "otherOptions": {}
       },
@@ -118,7 +118,7 @@
       "parameters": {
         "resource": "message",
         "operation": "post",
-        "channel": "general",
+        "channel": "engineering-product-launch",
         "text": "❌ CI run failed! Reason: {{$json.choices[0].message.content}}",
         "otherOptions": {}
       },
