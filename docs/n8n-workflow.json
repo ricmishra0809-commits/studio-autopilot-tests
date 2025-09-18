@@ -1,12 +1,12 @@
 
 {
   "name": "DEPRECATED - Use GitHub Actions Instead",
-  "notes": "This n8n workflow is deprecated due to configuration issues. Please use the GitHub Actions workflow defined in the 'CI/CD Config' page of the application. It is more reliable and easier to set up.",
+  "notes": "This n8n workflow is deprecated and should not be used. It has been replaced by a more reliable GitHub Actions workflow. Please refer to the 'CI/CD Config' page in the application for the correct setup instructions.",
   "nodes": [
     {
       "parameters": {},
       "id": "notice",
-      "name": "Notice: Use GitHub Actions",
+      "name": "Notice: This workflow is DEPRECATED.",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -14,7 +14,7 @@
         320
       ],
       "data": {
-        "text": "This workflow is not recommended. Please go to the 'CI/CD Config' page in the app and follow the instructions for GitHub Actions."
+        "text": "This workflow is no longer supported. Please use the GitHub Actions workflow located on the 'CI/CD Config' page of the application. It is the recommended and standard way to handle CI/CD for this project."
       }
     }
   ],
@@ -24,7 +24,7 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "6.0",
+  "versionId": "7.0",
   "triggerCount": 0,
   "tags": [
     "firebase",
