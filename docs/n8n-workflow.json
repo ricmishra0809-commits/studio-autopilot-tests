@@ -115,19 +115,12 @@
     },
     {
       "parameters": {
-        "llm": {
-          "llm": {
-            "model": "gpt-4o-mini"
-          }
-        },
-        "prompt": {
-          "source": "expressions",
-          "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n\n{{ $('Run All Tests').item.json.stdout }}\n\n{{ $('Run All Tests').item.json.stderr }}"
-        }
+        "model": "gpt-4o-mini",
+        "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise.\n\nTest output:\n\n{{ $('Run All Tests').item.json.stdout }}\n\n{{ $('Run All Tests').item.json.stderr }}"
       },
       "id": "4b971a81-3f19-4820-96f3-167812999496",
       "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.aiAgent",
+      "type": "n8n-nodes-base.openAiChat",
       "typeVersion": 1,
       "position": [
         500,
@@ -142,62 +135,62 @@
     }
   ],
   "connections": {
-    "Webhook": {
+    "1": {
       "main": [
         [
           {
-            "node": "Run All Tests",
+            "node": "2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Run All Tests": {
+    "2": {
       "main": [
         [
           {
-            "node": "Did Tests Pass?",
+            "node": "3",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Did Tests Pass?": {
+    "3": {
       "main": [
         [
           {
-            "node": "Deploy to Firebase",
+            "node": "5",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Summarize Failure with AI",
+            "node": "4b971a81-3f19-4820-96f3-167812999496",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Deploy to Firebase": {
+    "5": {
       "main": [
         [
           {
-            "node": "Notify Success on Slack",
+            "node": "6",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Summarize Failure with AI": {
+    "4b971a81-3f19-4820-96f3-167812999496": {
       "main": [
         [
           {
-            "node": "Notify Failure on Slack",
+            "node": "7",
             "type": "main",
             "index": 0
           }
