@@ -1,18 +1,34 @@
 import {genkit} from 'genkit';
-import {googleAI, gemini15Pro} from '@genkit-ai/googleai';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
+import {defineModel} from 'genkit/models';
 
 export const ai = genkit({
-  plugins: [googleAI()],
+  plugins: [
+    googleAI({
+      // Disabling the default model so we can define our own.
+      // We are still using the googleAI() plugin because it provides
+      // the underlying machinery to call external APIs.
+      // model: undefined, 
+    }),
+  ],
 });
 
-// Define a custom OpenAI-compatible model using the googleAI plugin's machinery
-const openRouterModel = ai.defineModel(
+// Define a custom OpenAI-compatible model using OpenRouter
+const openRouterModel = defineModel(
   {
     name: 'openai/gpt-4o-mini',
     label: 'OpenRouter - GPT-4o Mini',
-    configSchema: gemini15Pro.configSchema,
-    supportedCallTypes: ['generate'],
+    // We can still use googleAI's config schema for simplicity
+    // as it covers common properties.
+    configSchema: z.object({
+      temperature: z.number().optional(),
+      topK: z.number().optional(),
+      topP: z.number().optional(),
+      maxOutputTokens: z.number().optional(),
+      stopSequences: z.array(z.string()).optional(),
+    }),
+    // We are not specifying info here as it's not required for this custom model.
   },
   async (request, config) => {
     // This is a workaround to use googleAI's infrastructure to call an external
@@ -26,16 +42,42 @@ const openRouterModel = ai.defineModel(
       },
       'generate'
     );
+
     // Translate the Genkit request to something the OpenAI API understands.
-    const newRequest = {
-      ...request,
-      generationConfig: {
-        ...request.config,
-        // OpenRouter uses 'model' in the body, not the URL
-        model: 'openai/gpt-4o-mini',
+    const openAIRequest = {
+      model: 'openai/gpt-4o-mini',
+      messages: request.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content.map(part => {
+          if(part.text) return { type: 'text', text: part.text };
+          if(part.media) return { type: 'image_url', image_url: { url: part.media.url } };
+          return part;
+        })
+      })),
+      stream: false, // Assuming non-streaming for simplicity in this example
+      ...config,
+    };
+    
+    // Call the OpenRouter API. The googleAI getClient returns a client that
+    // has a `generate` method compatible with what we need.
+    const response = await (client as any).generate(openAIRequest);
+
+    // Translate the OpenAI response back to a Genkit response.
+    return {
+      candidates: response.choices.map((choice: any, index: number) => ({
+        index,
+        finishReason: choice.finish_reason,
+        message: {
+          role: 'model',
+          content: [{ text: choice.message.content }],
+        },
+      })),
+      usage: {
+        inputTokens: response.usage.prompt_tokens,
+        outputTokens: response.usage.completion_tokens,
+        totalTokens: response.usage.total_tokens,
       },
     };
-    return (client as any).generate(newRequest);
   }
 );
 

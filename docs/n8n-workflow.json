@@ -58,8 +58,7 @@
     {
       "parameters": {
         "authentication": "openApi",
-        "nodeUrl": "https://openrouter.ai/api/v1",
-        "model": "google/gemini-flash-1.5",
+        "model": "openai/gpt-4o-mini",
         "prompt": "The following CI/CD test run failed. Please analyze the output and provide a very short, one-paragraph summary explaining what went wrong and which tests failed. Be concise. Test output:\n\n{{$json[\"stdout\"]}}\n\n{{$json[\"stderr\"]}}",
         "options": {}
       },
@@ -217,4 +216,3 @@
     "automation"
   ]
 }
-
