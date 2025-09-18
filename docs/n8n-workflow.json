@@ -71,6 +71,7 @@
     },
     {
       "parameters": {
+        "authentication": "oAuth2",
         "channel": "engineering-product-launch",
         "text": "✅ CI run passed! Deploying new version to production."
       },
@@ -83,7 +84,7 @@
         180
       ],
       "credentials": {
-        "slackApi": {
+        "slackOAuth2Api": {
           "id": "YOUR_SLACK_CREDENTIALS_ID",
           "name": "Slack account"
         }
@@ -91,6 +92,7 @@
     },
     {
       "parameters": {
+        "authentication": "oAuth2",
         "channel": "engineering-product-launch",
         "text": "❌ CI run failed! AI Summary: {{$json.text}}"
       },
@@ -103,7 +105,7 @@
         500
       ],
       "credentials": {
-        "slackApi": {
+        "slackOAuth2Api": {
           "id": "YOUR_SLACK_CREDENTIALS_ID",
           "name": "Slack account"
         }
@@ -115,7 +117,7 @@
       },
       "id": "b1c2d3e4-f5a6-4b7c-8d9e-abcdef123456",
       "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.openAiChat",
+      "type": "n8n-nodes-base.basicLlmChain",
       "typeVersion": 1,
       "position": [
         500,
@@ -198,7 +200,7 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "2.0",
+  "versionId": "3.0",
   "triggerCount": 0,
   "tags": [
     "firebase",
