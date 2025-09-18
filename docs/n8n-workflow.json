@@ -1,6 +1,6 @@
 
 {
-  "name": "Studio AutoPilot CI/CD (Simple)",
+  "name": "Studio AutoPilot CI/CD",
   "nodes": [
     {
       "parameters": {
@@ -58,7 +58,7 @@
       "parameters": {
         "authentication": "oAuth2",
         "channel": "engineering-product-launch",
-        "text": "❌ CI run failed! Check the n8n logs for details."
+        "text": "❌ CI run failed! Check the n8n logs for details: {{ $('Run All Tests').item.json.stdout }}"
       },
       "id": "a9e1d8a3-2b4e-4c7b-8f1e-1234567890ab",
       "name": "Notify Failure on Slack",
@@ -77,24 +77,17 @@
     },
     {
       "parameters": {
-        "authentication": "oAuth2",
-        "channel": "engineering-product-launch",
-        "text": "✅ CI run passed! Deploying to production..."
+        "command": "firebase deploy --only hosting --token \"YOUR_FIREBASE_TOKEN\"",
+        "options": {}
       },
-      "id": "c0a5d0e2-a3c3-4d43-9b8e-6e54256c7a7a",
-      "name": "Notify Success on Slack",
-      "type": "n8n-nodes-base.slack",
-      "typeVersion": 3,
+      "id": "3a9c5d0f-1e2a-4b6c-8d9e-0f1a2b3c4d5e",
+      "name": "Deploy to Firebase",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 2,
       "position": [
         500,
         220
-      ],
-      "credentials": {
-        "slackOAuth2Api": {
-          "id": "YOUR_SLACK_CREDENTIALS_ID",
-          "name": "Slack account"
-        }
-      }
+      ]
     }
   ],
   "connections": {
@@ -124,7 +117,7 @@
       "main": [
         [
           {
-            "node": "c0a5d0e2-a3c3-4d43-9b8e-6e54256c7a7a",
+            "node": "3a9c5d0f-1e2a-4b6c-8d9e-0f1a2b3c4d5e",
             "type": "main",
             "index": 0
           }
@@ -144,7 +137,7 @@
   },
   "staticData": null,
   "pinData": {},
-  "versionId": "4.0",
+  "versionId": "5.0",
   "triggerCount": 0,
   "tags": [
     "firebase",
