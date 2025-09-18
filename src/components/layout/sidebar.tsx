@@ -101,6 +101,7 @@ export const navItems: NavSection[] = [
     icon: <Terminal className="h-4 w-4" />,
     links: [
       { href: '/cicd-config', label: 'CI/CD Config', icon: <Github className="h-4" /> },
+      { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4" /> },
       { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Workflow className="h-4" /> },
       { href: '/docs', label: 'Runbook', icon: <BookOpenText className="h-4 w-4" /> },
     ],
