@@ -15,9 +15,6 @@ const firebaseConfig = {
 // like writing to Firestore bypassing security rules.
 
 if (!admin.apps.length) {
-    // To connect to the emulators, you would set the FIRESTORE_EMULATOR_HOST
-    // and FIREBASE_STORAGE_EMULATOR_HOST environment variables.
-    // However, for this server-side logic, we'll connect to the real Firebase services.
   try {
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
@@ -25,9 +22,9 @@ if (!admin.apps.length) {
       storageBucket: firebaseConfig.storageBucket,
     });
   } catch (error: any) {
-     if (error.code !== 'app/duplicate-app') {
-        console.error('Firebase admin initialization error', error);
-     }
+    if (error.code !== 'app/duplicate-app') {
+      console.error('Firebase admin initialization error', error);
+    }
   }
 }
 
