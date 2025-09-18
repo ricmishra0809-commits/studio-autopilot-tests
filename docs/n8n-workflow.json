@@ -117,7 +117,7 @@
       },
       "id": "b1c2d3e4-f5a6-4b7c-8d9e-abcdef123456",
       "name": "Summarize Failure with AI",
-      "type": "n8n-nodes-base.basicLlmChain",
+      "type": "n8n-nodes-base.openAiChat",
       "typeVersion": 1,
       "position": [
         500,
@@ -209,3 +209,5 @@
     "ai"
   ]
 }
+
+    

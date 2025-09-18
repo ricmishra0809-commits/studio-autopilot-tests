@@ -1,7 +1,6 @@
-import {genkit} from 'genkit';
+import {genkit, defineModel} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
-import {defineModel} from 'genkit/models';
 
 export const ai = genkit({
   plugins: [
