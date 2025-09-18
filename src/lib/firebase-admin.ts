@@ -1,3 +1,4 @@
+
 import * as admin from 'firebase-admin';
 
 const firebaseConfig = {
@@ -14,21 +15,37 @@ const firebaseConfig = {
 // It is used for backend operations that require elevated privileges,
 // like writing to Firestore bypassing security rules.
 
-if (!admin.apps.length) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      projectId: firebaseConfig.projectId,
-      storageBucket: firebaseConfig.storageBucket,
-    });
-  } catch (error: any) {
-    if (error.code !== 'app/duplicate-app') {
-      console.error('Firebase admin initialization error', error);
+function initializeAdminApp() {
+  if (admin.apps.length === 0) {
+    try {
+      admin.initializeApp({
+        credential: admin.credential.applicationDefault(),
+        storageBucket: firebaseConfig.storageBucket,
+      });
+    } catch (error: any) {
+       if (error.code !== 'app/duplicate-app') {
+        console.error('Firebase admin initialization error', error);
+        // We rethrow the error to make it clear that initialization failed.
+        throw error;
+       }
     }
   }
+  return admin;
 }
 
-const dbAdmin = admin.firestore();
-const storageAdmin = admin.storage();
 
-export { dbAdmin, storageAdmin };
+// By exporting functions that get the services, we ensure 
+// initialization happens before any service is accessed.
+const getDb = () => {
+    initializeAdminApp();
+    return admin.firestore();
+}
+
+const getStorage = () => {
+    initializeAdminApp();
+    return admin.storage();
+}
+
+
+export const dbAdmin = getDb();
+export const storageAdmin = getStorage();
