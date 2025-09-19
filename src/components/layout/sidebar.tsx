@@ -21,6 +21,8 @@ import {
   User,
   Settings,
   MousePointerClick,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -52,6 +54,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { useTheme } from 'next-themes';
 
 type NavLink = {
   href: string;
@@ -107,6 +110,23 @@ export const navItems: NavSection[] = [
     ],
   },
 ];
+
+function ThemeToggle() {
+    const { setTheme, theme } = useTheme();
+  
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        className="group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:h-9"
+      >
+        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    );
+  }
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -189,6 +209,10 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-2 mt-auto">
+        <div className="flex items-center justify-center group-data-[collapsible=icon]:justify-center">
+            <div className="flex-grow group-data-[collapsible=icon]:hidden"></div>
+            <ThemeToggle />
+        </div>
          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="w-full justify-start h-auto p-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-auto group-data-[collapsible=icon]:h-auto group-data-[collapsible=icon]:aspect-square">
