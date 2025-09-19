@@ -7,3 +7,4 @@ import '@/ai/flows/summarize-ci-results.ts';
 import '@/ai/flows/generate-test-strategy.ts';
 import '@/ai/flows/explore-and-test-app.ts';
 import '@/ai/flows/generate-test-video.ts';
+import '@/ai/flows/record-visual-test.ts';
