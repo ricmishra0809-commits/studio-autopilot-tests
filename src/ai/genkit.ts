@@ -1,4 +1,4 @@
-import {genkit, defineModel} from 'genkit';
+import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'zod';
 
@@ -14,7 +14,7 @@ export const ai = genkit({
 });
 
 // Define a custom OpenAI-compatible model using OpenRouter
-const openRouterModel = defineModel(
+const openRouterModel = ai.defineModel(
   {
     name: 'openai/gpt-4o-mini',
     label: 'OpenRouter - GPT-4o Mini',
