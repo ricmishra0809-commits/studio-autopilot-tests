@@ -23,6 +23,7 @@ import {
   MousePointerClick,
   Moon,
   Sun,
+  TestTube,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -107,6 +108,7 @@ export const navItems: NavSection[] = [
       { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow className="h-4" /> },
       { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Workflow className="h-4" /> },
       { href: '/docs', label: 'Runbook', icon: <BookOpenText className="h-4 w-4" /> },
+      { href: '/api-test', label: 'API Test', icon: <TestTube className="h-4 w-4" /> },
     ],
   },
 ];
