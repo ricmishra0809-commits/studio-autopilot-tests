@@ -1,10 +1,10 @@
 'use client';
 import { usePathname } from 'next/navigation';
-import { AppShell } from './app-shell';
 import { useAuth } from '@/context/auth-context';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '../shared/loading-spinner';
+import { AppHeader } from './header';
 
 
 const AUTH_ROUTES = ['/login', '/signup'];
@@ -43,9 +43,18 @@ export function AppShellWrapper({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Render the shell for protected routes, otherwise just render children for public routes
+  // Render the header for protected routes, otherwise just render children for public routes
   if (!PUBLIC_ROUTES.includes(pathname)) {
-    return <AppShell>{children}</AppShell>;
+    return (
+        <div className="relative flex min-h-dvh flex-col bg-grid-pattern">
+            <AppHeader />
+            <main className="flex-1 p-4 md:p-6 lg:p-8">
+                <div className="mx-auto max-w-7xl">
+                    {children}
+                </div>
+            </main>
+        </div>
+    );
   }
 
   return <>{children}</>;
