@@ -1,66 +1,52 @@
+
 { pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {} }:
 let
   nodejs = pkgs.nodejs_20;
   pnpm = pkgs.nodePackages.pnpm;
-in
-pkgs.mkShell {
+  # For webkit-based browsers
+  webkitgtk_6_0 = pkgs.webkitgtk_6_0;
+
+in pkgs.mkShell {
   name = "firebase-studio";
   buildInputs = with pkgs; [
-    # For Node.js and package management
+    # General deps
+    bash
+    coreutils
+    gnumake
+    # Node.js and pnpm
     nodejs
     pnpm
-
-    # For Playwright
-    chromium
-    ffmpeg
-    glibc
-    nss
-    nspr
+    # Firebase
+    firebase-tools
+    # Playwright deps
+    glib
     dbus
     atk
     at-spi2-core
-    cups
-    libdrm
+    nss
+    nspr
     libxkbcommon
-    libXcomposite
-    libXdamage
-    libXfixes
+    xorg.libXcomposite
+    xorg.libXdamage
+    xorg.libXfixes
     libXrandr
     libX11
-    libXext
+    libdrm
+    libgbm
+    udev
     pango
     cairo
-    expat
     harfbuzz
-    libglib
-    libgobject
-    libudev0-shim
-    libusb
-    gsettings-desktop-schemas
-    gtk3
-    libnotify
-    libappindicator-gtk3
-    libdbusmenu-gtk3
-    webkitgtk_6_0
-    libgbm
-    xorg.libXScrnSaver
-    xorg.libXv
-    xorg.libxshmfence
-    xorg.libXtst
-    # Additional dependencies that might be needed
     alsa-lib
-    fontconfig
-    freetype
-    libjpeg
-    libpng
-    libtiff
-    libwebp
-    zlib
+    # For firefox
+    ffmpeg
+    # For webkit
+    webkitgtk_6_0
   ];
   shellHook = ''
-    # Set the PLAYWRIGHT_BROWSERS_PATH to the nix-managed chromium
-    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.chromium}/
-    # Set other environment variables if needed
-    export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+    # Allow looking for native dependencies in the path
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright.browsersPath}
+    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}:$LD_LIBRARY_PATH"
+    export FONTCONFIG_FILE="${pkgs.fontconfig.makeFontsConf { fontDirectories = [ pkgs.dejavu_fonts ]; }}"
   '';
 }
