@@ -1,40 +1,38 @@
 
 { pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {} }:
 let
-  nodejs = pkgs.nodejs-18_x;
+  nodejs = pkgs.nodejs_20;
   pnpm = pkgs.nodePackages.pnpm;
-  node_packages = with pkgs.nodePackages; [
-    firebase-tools
-  ];
 in
 pkgs.mkShell {
+  name = "firebase-studio";
   buildInputs = with pkgs; [
+    # Node.js and package managers
     nodejs
     pnpm
-    (playwright-driver.override {
-      browser_type = "chromium";
-    })
-    # Additional Playwright dependencies
-    alsa-lib
-    at-spi2-atk
-    at-spi2-core
-    atk
-    cairo
-    cups
-    dbus
-    expat
-    gdk-pixbuf
+
+    # Firebase
+    google-cloud-sdk
+    
+    # Playwright dependencies
+    chromium
+    firefox
+    webkitgtk
+    
+    # Additional libraries needed by Playwright
     glib
-    gtk3
+    nss
+    nspr
+    cups
     libdrm
     libgbm
     libxkbcommon
-    nspr
-    nss
-    pango
-    udev
+    at-spi2-atk
+    libxshmfence
+    libepoxy
+    libjpeg
+    ffmpeg
     xorg.libX11
-    xorg.libXScrnSaver
     xorg.libXcomposite
     xorg.libXcursor
     xorg.libXdamage
@@ -45,12 +43,26 @@ pkgs.mkShell {
     xorg.libXrender
     xorg.libXtst
     xorg.libxcb
-  ] ++ node_packages;
+    xorg.libxkbfile
+    xorg.libxmu
+    xorg.xauth
+    alsa-lib
+    expat
+    libdbusmenu
+    gdk-pixbuf
+    cairo
+    pango
+    gtk3
+    udev
+  ];
 
   shellHook = ''
-    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver}/browsers
-    export PRISMA_SCHEMA_ENGINE_BINARY="${pkgs.prisma-engines}/bin/schema-engine"
-    export PRISMA_QUERY_ENGINE_BINARY="${pkgs.prisma-engines}/bin/query-engine"
-    export PRISMA_FMT_BINARY="${pkgs.prisma-engines}/bin/prisma-fmt"
+    # Set the path for Playwright to find its browser binaries
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright.browsers}/
+    # Set NPM config
+    # this will create a .npmrc file in the project directory
+    npm config set fund false
+    npm config set audit false
+    echo "Nix-shell environment is ready."
   '';
 }
