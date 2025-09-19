@@ -23,6 +23,7 @@ import {
   Moon,
   Sun,
   TestTube,
+  GitBranch,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -90,6 +91,7 @@ export const navItems: NavSection[] = [
       { href: '/n8n-workflow', label: 'n8n Workflow', icon: <Workflow /> },
       { href: '/cicd-integration', label: 'CI/CD Integration', icon: <Terminal /> },
       { href: '/docs', label: 'Runbook', icon: <BookOpenText /> },
+      { href: '/technical-blueprint', label: 'Technical Blueprint', icon: <GitBranch /> },
       { href: '/api-test', label: 'API Test', icon: <TestTube /> },
     ],
   },
