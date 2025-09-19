@@ -17,11 +17,11 @@ This document outlines the technical architecture, stack, and key components of 
 *   **Backend & Auth:** [Firebase](https://firebase.google.com/)
     *   **Authentication:** Firebase Auth for secure user login and signup.
     *   **Database:** Firestore (for storing test results, templates, etc.).
-    *   **Hosting:** Firebase Hosting.
+    *   **Hosting:** Firebase App Hosting.
 *   **Browser Automation:** [Playwright](https://playwright.dev/)
     *   **Why:** Used by the AI Test Agent to control real browsers (Chromium, Firefox, WebKit) for E2E testing. It's robust, fast, and feature-rich.
-*   **Visual Comparison:** [Pixel-diff libraries or AI Models]
-    *   **Why:** For comparing screenshots and highlighting visual regressions.
+*   **Visual Comparison:** [AI Models]
+    *   **Why:** The `analyzeVisuals` tool uses a multi-modal model to check for visual regressions without pixel-diffing.
 
 ## 2. Project Structure
 
@@ -29,10 +29,10 @@ This document outlines the technical architecture, stack, and key components of 
 .
 ├── src/
 │   ├── app/                    # Next.js App Router: All pages and layouts
-│   │   ├── (protected)/        # Route group for pages that require auth
-│   │   │   ├── ai-agent/
-│   │   │   ├── dashboard/
-│   │   │   └── ... (other pages)
+│   │   ├── (protected)/        # Route group for pages that require auth (removed for simplicity)
+│   │   ├── ai-agent/
+│   │   ├── dashboard/
+│   │   └── ... (other pages)
 │   │   ├── login/              # Login page
 │   │   ├── signup/             # Signup page
 │   │   ├── layout.tsx          # Root layout
@@ -44,7 +44,7 @@ This document outlines the technical architecture, stack, and key components of 
 │   │   └── genkit.ts           # Genkit initialization
 │   │
 │   ├── components/             # Reusable React components
-│   │   ├── layout/             # Layout components (Sidebar, AppShell)
+│   │   ├── layout/             # Layout components (Header, AppShell)
 │   │   ├── shared/             # Shared components (PageHeader, CodeBlock)
 │   │   └── ui/                 # ShadCN UI components
 │   │
@@ -62,7 +62,6 @@ This document outlines the technical architecture, stack, and key components of 
 ├── docs/                     # Project documentation
 │   ├── APP_CONCEPT.md
 │   └── TECHNICAL_BLUEPRINT.md
-│   └── WORKFLOW.md
 │
 └── public/                   # Static assets
 ```
@@ -82,12 +81,12 @@ To prevent the AI agent from launching a new browser instance for every single a
 *   The `PlaywrightService` class ensures that only one browser instance is active at a time for a given user session.
 *   It exposes simple methods like `click(selector)`, `fill(selector, value)`, and `getPageAsDataUri()`.
 *   The Genkit tools for browser interaction call the methods on this singleton instance.
-*   When the session is over, it closes the browser and returns a path to the recorded video.
-*   This service will be extended to manage multiple browser types (Chrome, Firefox) for cross-browser testing.
+*   When the session is over, it closes the browser and returns the recorded video as a data URI.
+*   This service can be extended to manage multiple browser types (Chrome, Firefox) for cross-browser testing.
 
 ### Authentication & Protected Routes
 *   **`auth-context.tsx`:** A React Context wraps the entire application, providing user state (`user`, `loading`).
 *   **`app-shell-wrapper.tsx`:** This component acts as a gatekeeper. It checks the user's auth state and the current URL.
     *   If a non-logged-in user tries to access a protected page (e.g., `/dashboard`), it redirects them to `/login`.
     *   If a logged-in user tries to access `/login` or `/`, it redirects them to `/dashboard`.
-    *   It also determines whether to render the main `AppShell` (with sidebar) or just the page content (for public pages like landing, login).
+    *   It also determines whether to render the main application header or just the page content (for public pages like landing, login).
