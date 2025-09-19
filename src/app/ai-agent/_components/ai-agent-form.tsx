@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -44,7 +45,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [origin, setOrigin] = useState('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       setOrigin(window.location.origin);
     }
@@ -60,7 +61,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   });
 
   // Set the default URL once the origin is available
-  React.useEffect(() => {
+  useEffect(() => {
     if (origin) {
       form.setValue('url', origin);
     }
