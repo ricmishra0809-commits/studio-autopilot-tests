@@ -1,45 +1,56 @@
 
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/g8zzlf6drg73c987ii390yicq4c0j778.zip") {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {} }:
 let
   nodejs = pkgs.nodejs-18_x;
   pnpm = pkgs.nodePackages.pnpm;
-in pkgs.mkShell {
-  name = "studio-shell";
+  node_packages = with pkgs.nodePackages; [
+    firebase-tools
+  ];
+in
+pkgs.mkShell {
   buildInputs = with pkgs; [
     nodejs
     pnpm
-    # Additional dependencies for Playwright
+    (playwright-driver.override {
+      browser_type = "chromium";
+    })
+    # Additional Playwright dependencies
+    alsa-lib
+    at-spi2-atk
+    at-spi2-core
+    atk
+    cairo
+    cups
+    dbus
+    expat
+    gdk-pixbuf
     glib
+    gtk3
+    libdrm
+    libgbm
+    libxkbcommon
     nspr
     nss
-    dbus
-    libatk
-    atk-bridge
-    expat
-    at-spi2-atk
-    libxkbcommon
+    pango
+    udev
     xorg.libX11
+    xorg.libXScrnSaver
     xorg.libXcomposite
+    xorg.libXcursor
     xorg.libXdamage
     xorg.libXext
     xorg.libXfixes
+    xorg.libXi
     xorg.libXrandr
+    xorg.libXrender
+    xorg.libXtst
     xorg.libxcb
-    udev
-    alsa-lib
-    pango
-    cairo
-    harfbuzz
-    libdrm
-    libgbm
-  ];
+  ] ++ node_packages;
+
   shellHook = ''
-    # Set NPM config to use the Nix store
-    export NPM_CONFIG_PREFIX=$(pwd)/.npm-packages
-    export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
-    # Set Node-specific environment variables
-    export NODE_PATH=$NODE_PATH:$(nix-build --no-out-link "<nixpkgs>" -A nodejs.pkgs.node_modules)/lib/node_modules
-    echo "Nix-shell environment for Studio AutoPilot is ready."
-    echo "Run 'npm run dev' and 'npm run genkit:watch' in separate terminals."
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver}/browsers
+    export PRISMA_SCHEMA_ENGINE_BINARY="${pkgs.prisma-engines}/bin/schema-engine"
+    export PRISMA_QUERY_ENGINE_BINARY="${pkgs.prisma-engines}/bin/query-engine"
+    export PRISMA_FMT_BINARY="${pkgs.prisma-engines}/bin/prisma-fmt"
   '';
 }
