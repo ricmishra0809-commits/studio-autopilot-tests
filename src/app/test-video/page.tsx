@@ -1,15 +1,7 @@
-'use server';
-import { generateTestVideo } from '@/ai/flows/generate-test-video';
+'use client';
 import { TestVideoForm } from './_components/test-video-form';
+import { getVideo } from './actions';
 
-// The timeout for this server action is now configured in next.config.ts
-export const maxDuration = 120; // 2 minutes
-
-export default async function TestVideoPage() {
-  async function getVideo(data: { prompt: string }) {
-    'use server';
-    return await generateTestVideo(data);
-  }
-
+export default function TestVideoPage() {
   return <TestVideoForm getVideo={getVideo} />;
 }

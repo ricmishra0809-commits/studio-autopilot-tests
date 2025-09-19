@@ -2,7 +2,8 @@ import { AIAgentForm } from './_components/ai-agent-form';
 import { exploreAndTestApp } from '@/ai/flows/explore-and-test-app';
 import { devices } from 'playwright';
 
-// The timeout for this server action is now configured in next.config.ts
+// Set the timeout for this specific page.
+// This is a server-rendered page, so this export is valid here.
 export const maxDuration = 120; // 2 minutes
 
 export default async function AiAgentPage() {
