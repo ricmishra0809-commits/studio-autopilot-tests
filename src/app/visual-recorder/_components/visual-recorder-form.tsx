@@ -14,8 +14,9 @@ import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CodeBlock } from '@/components/shared/code-block';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Play, Square, MousePointerSquare, TriangleAlert } from 'lucide-react';
+import { Play, Square, MousePointerClick, TriangleAlert } from 'lucide-react';
 import type { VisualTestSessionOutput } from '@/ai/flows/record-visual-test';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   url: z.string().url({ message: 'Please enter a valid URL.' }),
@@ -230,7 +231,7 @@ export function VisualRecorderForm({ runSession }: VisualRecorderFormProps) {
       {generatedWorkflow && (
         <div className="space-y-8">
             <Alert>
-                <MousePointerSquare className="h-4 w-4" />
+                <MousePointerClick className="h-4 w-4" />
                 <AlertTitle>Recording Finished!</AlertTitle>
                 <AlertDescription>
                     Below is your generated Playwright workflow. You can copy this code into a new test file.
