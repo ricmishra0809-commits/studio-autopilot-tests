@@ -62,8 +62,8 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
   return (
     <div>
       <PageHeader
-        title="OpenRouter API Test"
-        description="Use this page to verify that your OpenRouter API key is working correctly with the 'gpt-4o-mini' model."
+        title="API Test"
+        description="Verify the connectivity with your configured AI model."
       />
 
       <Card className="mb-8">
@@ -106,7 +106,7 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
       {isLoading && (
         <div className="flex items-center justify-center p-8">
           <LoadingSpinner className="h-8 w-8" />
-          <p className="ml-4 text-muted-foreground">Sending request to OpenRouter...</p>
+          <p className="ml-4 text-muted-foreground">Sending request to your AI model...</p>
         </div>
       )}
 
@@ -114,9 +114,9 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
         <Alert variant="destructive">
             <AlertTitle>API Test Failed</AlertTitle>
             <AlertDescription>
-                <p className="font-bold">The API call to OpenRouter failed. Here's the error:</p>
+                <p className="font-bold">The API call to your model failed. Here's the error:</p>
                 <pre className="mt-2 text-xs bg-black/20 p-2 rounded-md">{error}</pre>
-                <p className="mt-4">Please double-check that your `OPENROUTER_API_KEY` in the `.env` file is correct and has funds.</p>
+                <p className="mt-4">Please double-check that your API key in the `.env` file is correct and has funds.</p>
             </AlertDescription>
         </Alert>
       )}
@@ -127,7 +127,7 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
             <CardTitle>API Test Successful!</CardTitle>
           </CardHeader>
           <CardContent className="prose prose-sm max-w-none text-muted-foreground">
-            <p className="font-bold text-green-400">Received response from gpt-4o-mini:</p>
+            <p className="font-bold text-green-400">Received response from your AI model:</p>
             <p>{result}</p>
           </CardContent>
         </Card>
