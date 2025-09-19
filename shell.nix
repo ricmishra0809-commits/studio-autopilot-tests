@@ -1,45 +1,46 @@
-pkgs.mkShell {
-  buildInputs = [
-    pkgs.nodejs
-    pkgs.gtk3
-    pkgs.cairo
-    pkgs.pango
-    pkgs.gdk-pixbuf
-    pkgs.sqlite
-    pkgs.icu
-    pkgs.libxslt
-    pkgs.lcms2
-    pkgs.libopus
-    pkgs.libwebp
-    pkgs.libjpeg
-    pkgs.libpng
-    pkgs.fontconfig
-    pkgs.freetype
-    pkgs.enchant
-    pkgs.libsecret
-    pkgs.libtasn1
-    pkgs.hyphen
-    pkgs.json-glib
-    pkgs.gnutls
-    pkgs.mesa
-    pkgs.x264
-    pkgs.xorg.libX11
-    pkgs.xorg.libxcb
-    pkgs.dbus
+{ pkgs ? import <nixpkgs> { } }:
+let
+  nodejs = pkgs.nodejs-20_x;
+  pnpm = pkgs.nodePackages.pnpm;
+  firebase-tools = pkgs.nodePackages.firebase-tools;
 
-    # Playwright dependencies
-    pkgs.nss
-    pkgs.nspr
-    pkgs.atk
-    pkgs.at-spi2-atk
-    pkgs.xorg.libXcomposite
-    pkgs.xorg.libXdamage
-    pkgs.xorg.libXfixes
-    pkgs.xorg.libXrandr
-    pkgs.gbm
-    pkgs.xcb-util
-    pkgs.xkbcommon
-    pkgs.alsaLib
-    pkgs.libudev
+  playwright-deps = with pkgs; [
+    # Deps from https://playwright.dev/docs/ci#nix
+    xorg.libX11
+    xorg.libXcomposite
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXrandr
+    xorg.libXtst
+    xorg.libxkbcommon
+    xorg.libxcb
+    nss
+    nspr
+    alsa-lib
+    at-spi2-atk
+    cups
+    libexpat
+    libuuid
+    libdrm
+    libgbm
+    libxkbcommon
+    mesa
+    pango
+    pipewire
+    udev
   ];
-}
+
+in
+  pkgs.mkShell {
+    buildInputs = [
+      nodejs
+      pnpm
+      firebase-tools
+      pkgs.google-cloud-sdk
+    ] ++ playwright-deps;
+
+    shellHook = ''
+      export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright.browsers-json}/.
+    '';
+  }
