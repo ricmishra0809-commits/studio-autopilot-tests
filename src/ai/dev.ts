@@ -9,3 +9,4 @@ import '@/ai/flows/explore-and-test-app.ts';
 import '@/ai/flows/generate-test-video.ts';
 import '@/ai/flows/record-visual-test.ts';
 import '@/ai/flows/api-test-flow.ts';
+import '@/ai/schemas/generate-test-video.ts';

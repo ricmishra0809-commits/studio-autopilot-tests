@@ -4,24 +4,12 @@
  * @fileOverview An AI flow to generate a video based on a text prompt using Veo.
  *
  * - generateTestVideo - A function that generates a video of a test scenario.
- * - GenerateTestVideoInput - The input type for the generateTestVideo function.
- * - GenerateTestVideoOutput - The return type for the generateTestVideo function.
  */
 
 import { ai } from '@/ai/genkit';
 import { googleAI } from '@genkit-ai/googleai';
-import { z } from 'genkit';
+import type { GenerateTestVideoInput, GenerateTestVideoOutput } from '@/ai/schemas/generate-test-video';
 
-export const GenerateTestVideoInputSchema = z.object({
-  prompt: z.string().describe('A text description of the test scenario to generate a video for.'),
-});
-export type GenerateTestVideoInput = z.infer<typeof GenerateTestVideoInputSchema>;
-
-export const GenerateTestVideoOutputSchema = z.object({
-  video: z.string().describe('A base64 encoded video of the generated scenario. As a data URI.'),
-  feedback: z.string().describe('Feedback on the video generation process.'),
-});
-export type GenerateTestVideoOutput = z.infer<typeof GenerateTestVideoOutputSchema>;
 
 export async function generateTestVideo(input: GenerateTestVideoInput): Promise<GenerateTestVideoOutput> {
   let operation;

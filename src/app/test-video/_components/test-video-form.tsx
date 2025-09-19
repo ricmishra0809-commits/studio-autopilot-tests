@@ -20,7 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Video } from 'lucide-react';
-import type { GenerateTestVideoOutput } from '@/ai/flows/generate-test-video';
+import type { GenerateTestVideoOutput } from '@/ai/schemas/generate-test-video';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 
@@ -51,7 +51,7 @@ export function TestVideoForm({ getVideo }: TestVideoFormProps) {
     try {
       const response = await getVideo(values);
       setResult(response);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating video:', error);
       setResult({ video: '', feedback: `An unexpected error occurred: ${error}`})
     } finally {
