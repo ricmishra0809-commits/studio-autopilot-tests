@@ -113,11 +113,11 @@ export default function LandingPage() {
               {features.map((feature, index) => (
                 <Card
                   key={index}
-                  className="group relative flex flex-col overflow-hidden bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5"
+                  className="group relative flex flex-col overflow-hidden bg-card border rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5"
                 >
                    <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-br from-white/5 to-transparent transition-all duration-300 group-hover:from-white/10" />
                   <CardHeader className="relative z-10 flex flex-row items-center gap-4">
-                    <div className="p-3 bg-white/5 border border-white/10 rounded-lg">
+                    <div className="p-3 bg-card border rounded-lg">
                       {feature.icon}
                     </div>
                     <CardTitle className="text-lg font-headline">

@@ -49,7 +49,7 @@ export default function WorkflowPage() {
           {workflowSteps.map((step, index) => (
             <React.Fragment key={step.title}>
               <div className="flex-1 flex">
-                <Card className="group relative flex flex-col w-full overflow-hidden bg-white/5 border border-white/10 rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5">
+                <Card className="group relative flex flex-col w-full overflow-hidden bg-card border rounded-xl transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1.5">
                    <div className="absolute top-0 left-0 h-full w-full bg-gradient-to-br from-white/5 to-transparent transition-all duration-300 group-hover:from-white/10" />
                   <CardHeader className="relative z-10 text-center items-center">
                     {step.icon}
@@ -71,7 +71,7 @@ export default function WorkflowPage() {
         </div>
       </div>
        <div className="mt-12">
-        <Card className="bg-white/5 border border-white/10">
+        <Card className="bg-card border">
           <CardHeader>
             <CardTitle>Putting It All Together</CardTitle>
           </CardHeader>

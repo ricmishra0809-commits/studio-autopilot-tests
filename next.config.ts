@@ -23,25 +23,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'storage.googleapis.com',
-        port: '',
-        pathname: '/**',
+        protocol: 'https'
       }
-    ],
-  },
-  experimental: {
-    serverActions: {
-      // Increase the timeout for server actions to 2 minutes (120 seconds)
-      // This is needed for long-running AI tasks like the test agent.
-      bodySizeLimit: '4.5mb',
-    },
+    ]
   }
 };
 
