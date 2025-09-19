@@ -42,15 +42,30 @@ type AiAgentFormProps = {
 export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   const [result, setResult] = useState<ExploreAndTestAppOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [origin, setOrigin] = useState('');
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      url: 'https://www.google.com',
-      task: 'Search for "Firebase Studio" and take a screenshot of the results.',
+      url: '',
+      task: 'Verify that the main heading contains the text "Automate Your Testing".',
       device: '',
     },
   });
+
+  // Set the default URL once the origin is available
+  React.useEffect(() => {
+    if (origin) {
+      form.setValue('url', origin);
+    }
+  }, [origin, form]);
+
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
