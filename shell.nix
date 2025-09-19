@@ -6,35 +6,61 @@ in
 pkgs.mkShell {
   name = "firebase-studio";
   buildInputs = with pkgs; [
+    # For Node.js and package management
     nodejs
     pnpm
-    # Playwright dependencies
+
+    # For Playwright
     chromium
-    firefox
-    webkitgtk_6_0
-    # System dependencies for Playwright
-    glib
+    ffmpeg
+    glibc
     nss
     nspr
     dbus
-    libatk-1_0
+    atk
     at-spi2-core
+    cups
+    libdrm
     libxkbcommon
-    libX11
     libXcomposite
     libXdamage
-    libXext
     libXfixes
     libXrandr
-    libdrm
-    libgbm
-    udev
-    alsa-lib
+    libX11
+    libXext
     pango
     cairo
+    expat
     harfbuzz
+    libglib
+    libgobject
+    libudev0-shim
+    libusb
+    gsettings-desktop-schemas
+    gtk3
+    libnotify
+    libappindicator-gtk3
+    libdbusmenu-gtk3
+    webkitgtk_6_0
+    libgbm
+    xorg.libXScrnSaver
+    xorg.libXv
+    xorg.libxshmfence
+    xorg.libXtst
+    # Additional dependencies that might be needed
+    alsa-lib
+    fontconfig
+    freetype
+    libjpeg
+    libpng
+    libtiff
+    libwebp
+    zlib
   ];
   shellHook = ''
-    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}/
+    # Set the PLAYWRIGHT_BROWSERS_PATH to the nix-managed chromium
+    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.chromium}/
+    # Set other environment variables if needed
+    export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
   '';
 }
