@@ -5,10 +5,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 class PlaywrightService {
-  private static instance: PlaywrightService;
+  private static instance: PlaywrightService | null = null;
   private browser: any;
   private context: any;
-  private page: any;
+  public page: any; // Make page public to simplify access
   private device: string | undefined;
   private videoPath: string | null = null;
 
@@ -17,12 +17,16 @@ class PlaywrightService {
   }
 
   public static async getInstance(device?: string): Promise<PlaywrightService> {
-    if (!PlaywrightService.instance || PlaywrightService.instance.device !== device) {
-      if (PlaywrightService.instance) {
+    // If an instance exists and the device is different, close the old one.
+    if (PlaywrightService.instance && PlaywrightService.instance.device !== device) {
         await PlaywrightService.instance.closeAndGetVideo();
-      }
-      PlaywrightService.instance = new PlaywrightService(device);
-      await PlaywrightService.instance.initialize();
+        PlaywrightService.instance = null;
+    }
+
+    if (!PlaywrightService.instance) {
+      const newInstance = new PlaywrightService(device);
+      await newInstance.initialize(); // Await initialization here.
+      PlaywrightService.instance = newInstance;
     }
     return PlaywrightService.instance;
   }
@@ -131,7 +135,6 @@ class PlaywrightService {
         fs.unlinkSync(this.videoPath); // Clean up the video file
     }
     
-    // @ts-ignore
     PlaywrightService.instance = null;
     return videoDataUri;
   }
