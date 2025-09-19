@@ -3,50 +3,49 @@
 let
   nodejs = pkgs.nodejs_20;
   pnpm = pkgs.nodePackages.pnpm;
-  # For webkit-based browsers
-  webkitgtk_6_0 = pkgs.webkitgtk_6_0;
-
-in pkgs.mkShell {
-  name = "firebase-studio";
-  buildInputs = with pkgs; [
-    # General deps
-    bash
-    coreutils
-    gnumake
-    # Node.js and pnpm
-    nodejs
-    pnpm
-    # Firebase
-    firebase-tools
-    # Playwright deps
-    glib
+  playwright-deps = with pkgs; [
+    # Deps from https://playwright.dev/docs/ci#nix
+    # and https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/tools/testing/playwright/default.nix
+    glibc
+    zlib
+    nss
+    nspr
+    cups
+    expat
     dbus
     atk
     at-spi2-core
-    nss
-    nspr
+    cairo
+    pango
+    glib
+    gtk3
+    libdrm
+    libgbm
     libxkbcommon
+    xorg.libX11
     xorg.libXcomposite
     xorg.libXdamage
     xorg.libXfixes
-    libXrandr
-    libX11
-    libdrm
-    libgbm
-    udev
-    pango
-    cairo
-    harfbuzz
+    xorg.libXrandr
+    xorg.libxkbfile
+    xorg.libXrender
+    xorg.libXtst
     alsa-lib
-    # For firefox
+    libpulseaudio
+    libopus
+    libwebp
     ffmpeg
-    # For webkit
-    webkitgtk_6_0
+    harfbuzz
+    udev
+    fontconfig-ultimate
+    # Extra deps from playwright install --with-deps chromium
+    xorg.libXScrnSaver
   ];
-  shellHook = ''
-    # Allow looking for native dependencies in the path
-    export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright.browsersPath}
-    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}:$LD_LIBRARY_PATH"
-    export FONTCONFIG_FILE="${pkgs.fontconfig.makeFontsConf { fontDirectories = [ pkgs.dejavu_fonts ]; }}"
-  '';
+in pkgs.mkShell {
+  name = "firebase-studio";
+  buildInputs = [
+    nodejs
+    pnpm
+    pkgs.firebase-tools
+  ] ++ playwright-deps;
 }
