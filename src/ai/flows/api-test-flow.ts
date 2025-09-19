@@ -23,7 +23,10 @@ export async function runApiTest(input: ApiTestInput): Promise<ApiTestOutput> {
       input: { schema: ApiTestInputSchema },
       output: { schema: ApiTestOutputSchema },
       model: 'openai/gpt-4o-mini',
-      prompt: `You are a helpful assistant. The user sent this query: {{{query}}}. Respond to it concisely.`,
+      prompt: `You are an API testing assistant for OpenRouter. Your sole purpose is to confirm that the API connection is working.
+Respond to the user's query: '{{{query}}}' with a short, technical confirmation message.
+Example: "API connection successful. Received and processed query."
+Do not use any informal language or greetings.`,
     },
   );
 
