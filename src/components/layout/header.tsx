@@ -43,6 +43,8 @@ import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 
@@ -130,6 +132,9 @@ export function AppHeader() {
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-64 p-4">
+                        <SheetHeader>
+                            <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                        </SheetHeader>
                          <Link href="/dashboard" className="flex items-center gap-2.5 mb-8">
                             <Rocket className="w-7 h-7 text-primary" />
                             <span className="font-bold text-lg font-headline">
