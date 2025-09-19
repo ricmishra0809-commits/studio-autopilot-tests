@@ -26,6 +26,8 @@ const formSchema = z.object({
   url: z.string().url({ message: 'Please enter a valid URL to start recording.' }),
 });
 
+type FormValues = z.infer<typeof formSchema>;
+
 type RecordedAction = {
     action: string;
     params: any;
@@ -44,14 +46,14 @@ export function VisualRecorderForm({ generateWorkflow }: VisualRecorderFormProps
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>>) {
+  function onSubmit(values: FormValues) {
     setIsRecording(true);
     setRecordedActions([]);
     setGeneratedWorkflow(null);
