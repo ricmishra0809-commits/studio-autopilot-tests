@@ -41,7 +41,7 @@ export async function manageVisualTestSession(input: VisualTestSessionInput): Pr
         await service.goTo(input.url);
         const screenshot = await service.getPageAsDataUri();
         sessions.set(sessionId, { service, actions: [`// Test for ${input.url}`] });
-        return { sessionId, screenshot };
+        return { sessionId, screenshot, recordedActions: [] };
     }
 
     if (!input.sessionId || !sessions.has(input.sessionId)) {
@@ -61,6 +61,9 @@ export async function manageVisualTestSession(input: VisualTestSessionInput): Pr
     }
 
     if (input.action === 'click') {
+        if (input.x === undefined || input.y === undefined) {
+             return { sessionId: input.sessionId, screenshot: await session.service.getPageAsDataUri(), error: `Click coordinates are missing.` };
+        }
         const { x, y } = input;
 
         // Use AI to determine the best selector for the click
