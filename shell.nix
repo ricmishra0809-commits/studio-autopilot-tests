@@ -1,51 +1,54 @@
 
 { pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {} }:
+
 let
   nodejs = pkgs.nodejs_20;
   pnpm = pkgs.nodePackages.pnpm;
-  playwright-deps = with pkgs; [
-    # Deps from https://playwright.dev/docs/ci#nix
-    # and https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/tools/testing/playwright/default.nix
-    glibc
-    zlib
-    nss
-    nspr
-    cups
-    expat
-    dbus
-    atk
+in
+pkgs.mkShell {
+  name = "firebase-studio";
+  buildInputs = with pkgs; [
+    # Node.js and package manager
+    nodejs
+    pnpm
+
+    # Playwright dependencies
+    # Source: https://playwright.dev/docs/ci#nix
+    (playwright.override {
+      browsers = ["chromium"];
+    }).chromium
+
+    # System libraries required by Playwright/Chromium
+    alsa-lib
+    at-spi2-atk
     at-spi2-core
+    atk
     cairo
-    pango
+    cups
+    dbus
+    expat
+    fontconfig
+    freetype
+    gdk-pixbuf
     glib
     gtk3
-    libdrm
-    libgbm
     libxkbcommon
-    xorg.libX11
     xorg.libXcomposite
     xorg.libXdamage
     xorg.libXfixes
     xorg.libXrandr
-    xorg.libxkbfile
-    xorg.libXrender
-    xorg.libXtst
-    alsa-lib
-    libpulseaudio
-    libopus
-    libwebp
-    ffmpeg
-    harfbuzz
+    xorg.libX11
+    nspr
+    nss
+    pango
     udev
-    fontconfig-ultimate
-    # Extra deps from playwright install --with-deps chromium
-    xorg.libXScrnSaver
+    libgbm
+    webkitgtk_6_0
   ];
-in pkgs.mkShell {
-  name = "firebase-studio";
-  buildInputs = [
-    nodejs
-    pnpm
-    pkgs.firebase-tools
-  ] ++ playwright-deps;
+
+  shellHook = ''
+    # Set NPM prefix to a local directory
+    export NPM_CONFIG_PREFIX=$(pwd)/.npm-global
+    export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+  '';
 }
