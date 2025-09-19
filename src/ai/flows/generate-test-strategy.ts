@@ -47,7 +47,7 @@ const generateTestStrategyPrompt = ai.definePrompt({
   name: 'generateTestStrategyPrompt',
   input: {schema: GenerateTestStrategyInputSchema},
   output: {schema: GenerateTestStrategyOutputSchema},
-  model: 'google/gemini-flash-1.5',
+  model: 'openai/gpt-4o-mini',
   prompt: `You are an expert QA Automation Engineer, Firebase Specialist, and No-Code Workflow Architect.
   Your task is to create a complete AI-powered software testing automation system for a Firebase Studio project.
 
