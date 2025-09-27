@@ -1,54 +1,48 @@
 
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") {} }:
+# This is a shell file that configures the development environment.
+# It's used by the `nix-shell` command.
+#
+# This file is NOT meant to be edited by hand, but is instead managed
+# by the Firebase team.
+
+{ pkgs ? import <nixos-unstable> {} }:
 
 let
-  nodejs = pkgs.nodejs_20;
-  pnpm = pkgs.nodePackages.pnpm;
-in
-pkgs.mkShell {
-  name = "firebase-studio";
-  buildInputs = with pkgs; [
-    # Node.js and package manager
-    nodejs
-    pnpm
-
-    # Playwright dependencies
-    # Source: https://playwright.dev/docs/ci#nix
-    (playwright.override {
-      browsers = ["chromium"];
-    }).chromium
-
-    # System libraries required by Playwright/Chromium
-    alsa-lib
-    at-spi2-atk
-    at-spi2-core
-    atk
-    cairo
-    cups
-    dbus
-    expat
-    fontconfig
-    freetype
-    gdk-pixbuf
+  playwright-deps = with pkgs; [
+    # Dependencies for Playwright, taken from apphosting.yaml
     glib
-    gtk3
-    libxkbcommon
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXfixes
-    xorg.libXrandr
-    xorg.libX11
+    gobject-introspection
     nspr
     nss
-    pango
-    udev
+    dbus
+    gio
+    atk
+    at-spi2-core
+    expat
+    at-spi2-atk
+    xorg.libX11
+    xorg.libXcomposite
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXrandr
     libgbm
-    webkitgtk_6_0
+    xorg.libxcb
+    libxkbcommon
+    udev
+    alsa-lib
+    pango
+    cairo
   ];
+in pkgs.mkShell {
+  buildInputs = with pkgs; [
+    nodejs_20 # Node.js 20
+    # Add other dependencies here
+  ] ++ playwright-deps;
 
   shellHook = ''
-    # Set NPM prefix to a local directory
-    export NPM_CONFIG_PREFIX=$(pwd)/.npm-global
-    export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
+    # This is a workaround for a bug in the Nix sandbox that causes
+    # "npm" to not be found.
+    export PATH=$PATH:$PWD/node_modules/.bin
   '';
 }
