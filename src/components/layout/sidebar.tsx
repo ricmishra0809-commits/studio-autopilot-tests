@@ -76,7 +76,7 @@ export const navItems: NavSection[] = [
   {
     title: 'AI Tools',
     links: [
-      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot /> },
+      { href: '/ai-agent', label: 'E2E Test Generator', icon: <Bot /> },
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck /> },
     ],
