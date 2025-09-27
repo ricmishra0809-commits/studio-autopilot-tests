@@ -15,8 +15,8 @@ export const ai = genkit({
 // Define a custom OpenAI-compatible model using OpenRouter
 const openRouterModel = ai.defineModel(
   {
-    name: 'openai/gpt-4o-mini',
-    label: 'OpenRouter - GPT-4o Mini',
+    name: 'xai/grok-4-fast',
+    label: 'OpenRouter - Grok 4 Fast',
     configSchema: GenerationCommonConfigSchema,
     // We are not specifying info here as it's not required for this custom model.
   },
@@ -27,7 +27,7 @@ const openRouterModel = ai.defineModel(
     }
 
     const openAIRequest = {
-      model: 'openai/gpt-4o-mini',
+      model: 'xai/grok-4-fast',
       messages: request.messages.map(msg => ({
         role: msg.role,
         content: msg.content.map(part => {
