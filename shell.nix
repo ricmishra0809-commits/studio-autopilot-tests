@@ -1,18 +1,20 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/3a149435017c68097063f25d77420e6c46649887.tar.gz") {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/release-23.11.tar.gz") {} }:
 
 pkgs.mkShell {
+  # The Nix packages we need
   buildInputs = with pkgs; [
-    nodejs_20
-    # Playwright dependencies from apphosting.yaml
-    glib
-    gobject-introspection # for libgio-2.0
-    nspr
-    nss
+    nodejs_20 # Node.js version 20
+    # Playwright dependencies
+    libglib
+    gobject-introspection
+    libnspr
+    libnss
+    nss_latest.nss_util
+    dbus-glib
     dbus
-    # libglib is covered by glib
     atk
     at-spi2-core
-    expat
+    libexpat
     at-spi2-atk
     xorg.libX11
     xorg.libXcomposite
@@ -20,17 +22,13 @@ pkgs.mkShell {
     xorg.libXext
     xorg.libXfixes
     xorg.libXrandr
-    mesa # for libgbm
+    libgbm
     xorg.libxcb
     libxkbcommon
-    udev # for libudev
-    alsa-lib # for libasound
-    pango
+    udev
+    alsa-lib
     cairo
+    pango
     harfbuzz
   ];
-
-  shellHook = ''
-    export PLAYWRIGHT_BROWSERS_PATH=$PWD/pw-browsers
-  '';
 }
