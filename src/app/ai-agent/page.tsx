@@ -8,7 +8,7 @@ export default async function AiAgentPage() {
     task: string;
   }) {
     'use server';
-    return await generateEeTest(data);
+    return await generateE2eTest(data);
   }
 
   return <AiAgentForm getTest={getTest} />;
