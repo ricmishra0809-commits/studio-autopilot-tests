@@ -6,6 +6,7 @@
 
 import { callOpenRouterWithJson } from '@/lib/openrouter';
 import { z } from 'zod';
+import { chromium } from 'playwright';
 
 const GenerateE2eTestInputSchema = z.object({
   url: z.string().url().describe('The URL of the page to test.'),
@@ -18,19 +19,25 @@ const GenerateE2eTestOutputSchema = z.object({
 });
 export type GenerateE2eTestOutput = z.infer<typeof GenerateE2eTestOutputSchema>;
 
-// Helper function to fetch HTML content of a URL
+// Helper function to fetch HTML content of a URL using Playwright
 async function getPageHtml(url: string): Promise<string> {
+  let browser = null;
   try {
-    const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
-    if (!response.ok) {
-      throw new Error(`Failed to fetch URL: ${response.statusText}`);
-    }
-    return await response.text();
+    browser = await chromium.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'domcontentloaded' }); // Wait for the main HTML to be loaded
+    const html = await page.content();
+    await browser.close();
+    return html;
   } catch (error) {
-    console.error('Error fetching page HTML:', error);
+    console.error('Error fetching page HTML with Playwright:', error);
+    if (browser) {
+      await browser.close();
+    }
     throw new Error('Could not retrieve the HTML content from the provided URL. Please ensure it is a publicly accessible page.');
   }
 }
+
 
 export async function generateE2eTest(input: GenerateE2eTestInput): Promise<GenerateE2eTestOutput> {
   const pageHtml = await getPageHtml(input.url);
