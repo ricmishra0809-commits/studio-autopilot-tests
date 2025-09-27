@@ -21,7 +21,7 @@ export type GenerateE2eTestOutput = z.infer<typeof GenerateE2eTestOutputSchema>;
 // Helper function to fetch HTML content of a URL
 async function getPageHtml(url: string): Promise<string> {
   try {
-    const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }});
+    const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
     if (!response.ok) {
       throw new Error(`Failed to fetch URL: ${response.statusText}`);
     }
