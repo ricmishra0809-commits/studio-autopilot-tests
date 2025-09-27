@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -72,15 +71,14 @@ export const navItems: NavSection[] = [
     links: [
       { href: '/test-strategy', label: 'Test Strategy', icon: <FileText /> },
       { href: '/test-scripts', label: 'Test Scripts', icon: <FileCode2 /> },
+      { href: '/e2e-test-generator', label: 'E2E Test Cases', icon: <Bot /> },
     ],
   },
   {
     title: 'AI Tools',
     links: [
-      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot /> },
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck /> },
-      { href: '/visual-recorder', label: 'Visual Recorder', icon: <Video /> },
     ],
   },
   {

@@ -5,24 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Rocket,
-  LayoutDashboard,
-  FileText,
-  FileCode2,
-  Workflow,
-  Github,
-  BookOpenText,
-  ClipboardCheck,
-  ShieldCheck,
-  Bot,
-  Terminal,
-  Video,
   LogOut,
   User,
   Settings,
-  MousePointerClick,
   Moon,
   Sun,
-  TestTube,
   Menu,
 } from 'lucide-react';
 import React from 'react';
@@ -151,7 +138,7 @@ export function AppHeader() {
                                 {section.links.map((link) => (
                                     <Button key={link.href} variant={pathname === link.href ? 'secondary' : 'ghost'} className="justify-start" asChild>
                                         <Link href={link.href}>
-                                            {link.icon}
+                                            {React.cloneElement(link.icon as React.ReactElement, { className: 'mr-2' })}
                                             <span>{link.label}</span>
                                         </Link>
                                     </Button>
@@ -174,7 +161,7 @@ export function AppHeader() {
                                 {section.links.map(link => (
                                      <DropdownMenuItem key={link.href} asChild>
                                         <Link href={link.href} className={cn(pathname === link.href && "text-primary")}>
-                                            {link.icon}
+                                            {React.cloneElement(link.icon as React.ReactElement, { className: 'mr-2' })}
                                             {link.label}
                                         </Link>
                                      </DropdownMenuItem>
