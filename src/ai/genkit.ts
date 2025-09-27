@@ -12,11 +12,11 @@ export const ai = genkit({
   // We can add other configurations here if needed.
 });
 
-// Define a custom OpenAI-compatible model using OpenRouter
-const openRouterModel = ai.defineModel(
+// Define a dynamic custom model creator for OpenRouter
+export const openRouterModel = (modelName: string) => ai.defineModel(
   {
-    name: 'xai/grok-4-fast',
-    label: 'OpenRouter - Grok 4 Fast',
+    name: `openrouter/${modelName}`,
+    label: `OpenRouter - ${modelName}`,
     configSchema: GenerationCommonConfigSchema,
     // We are not specifying info here as it's not required for this custom model.
   },
@@ -27,7 +27,7 @@ const openRouterModel = ai.defineModel(
     }
 
     const openAIRequest = {
-      model: 'xai/grok-4-fast',
+      model: modelName,
       messages: request.messages.map(msg => ({
         role: msg.role,
         content: msg.content.map(part => {

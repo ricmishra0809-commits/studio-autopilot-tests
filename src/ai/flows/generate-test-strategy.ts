@@ -8,7 +8,7 @@
  * - GenerateTestStrategyOutput - The return type for the generateTestStrategy function.
  */
 
-import {ai} from '@/ai/genkit';
+import {ai, openRouterModel} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateTestStrategyInputSchema = z.object({
@@ -47,7 +47,7 @@ const generateTestStrategyPrompt = ai.definePrompt({
   name: 'generateTestStrategyPrompt',
   input: {schema: GenerateTestStrategyInputSchema},
   output: {schema: GenerateTestStrategyOutputSchema},
-  model: 'xai/grok-4-fast',
+  model: openRouterModel('xai/grok-4-fast'), // Default to a strong text model
   prompt: `You are an expert QA Automation Engineer, Firebase Specialist, and No-Code Workflow Architect.
   Your task is to create a complete AI-powered software testing automation system for a Firebase Studio project.
 

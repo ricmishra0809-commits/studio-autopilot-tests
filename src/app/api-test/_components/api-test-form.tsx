@@ -27,6 +27,9 @@ const formSchema = z.object({
   query: z.string().min(2, {
     message: 'Query must be at least 2 characters.',
   }),
+  model: z.string().min(3, {
+    message: 'Model name is required (e.g., google/gemma-7b-it).'
+  })
 });
 
 type ApiTestFormProps = {
@@ -41,7 +44,8 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      query: 'Hello, who are you?',
+      query: 'Hello, confirm you are working.',
+      model: 'google/gemma-7b-it',
     },
   });
 
@@ -62,14 +66,30 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
   return (
     <div>
       <PageHeader
-        title="API Test"
-        description="Verify the connectivity with your configured AI model."
+        title="Model Connection Test"
+        description="Verify the connectivity with any AI model on OpenRouter by providing its name."
       />
 
       <Card className="mb-8">
         <CardContent className="p-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+               <FormField
+                control={form.control}
+                name="model"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-lg">Model Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="google/gemma-7b-it" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      The identifier of the model from OpenRouter (e.g., "xai/grok-4-fast", "mistralai/mistral-7b-instruct").
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="query"
@@ -80,7 +100,7 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
                       <Input placeholder="Ask something..." {...field} />
                     </FormControl>
                     <FormDescription>
-                      Send a simple message to the AI model.
+                      Send a simple message to the specified AI model.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -116,7 +136,7 @@ export function ApiTestForm({ performTest }: ApiTestFormProps) {
             <AlertDescription>
                 <p className="font-bold">The API call to your model failed. Here's the error:</p>
                 <pre className="mt-2 text-xs bg-black/20 p-2 rounded-md">{error}</pre>
-                <p className="mt-4">Please double-check that your API key in the `.env` file is correct and has funds.</p>
+                <p className="mt-4">Please double-check that your API key in the `.env` file is correct and that the model name is valid on OpenRouter.</p>
             </AlertDescription>
         </Alert>
       )}
