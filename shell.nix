@@ -1,34 +1,34 @@
-{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/release-23.11.tar.gz") {} }:
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-23.11.tar.gz") {} }:
 
 pkgs.mkShell {
-  # The Nix packages we need
   buildInputs = with pkgs; [
-    nodejs_20 # Node.js version 20
-    # Playwright dependencies
-    libglib
+    nodejs_20 # Node.js 20.x
+
+    # Playwright dependencies from apphosting.yaml, corrected for Nix
+    glib
     gobject-introspection
-    libnspr
-    libnss
-    nss_latest.nss_util
-    dbus-glib
+    nspr
+    nss
     dbus
     atk
-    at-spi2-core
-    libexpat
     at-spi2-atk
-    xorg.libX11
-    xorg.libXcomposite
-    xorg.libXdamage
-    xorg.libXext
-    xorg.libXfixes
-    xorg.libXrandr
+    expat
+    at-spi2-core
+    libx11
+    libxcomposite
+    libxdamage
+    libxext
+    libxfixes
+    libxrandr
     libgbm
-    xorg.libxcb
+    libxcb
     libxkbcommon
     udev
     alsa-lib
-    cairo
     pango
+    cairo
     harfbuzz
+    # libcups is not found by this name, `cups` is the package. But it's often not a hard requirement.
+    # We will add it if playwright still complains.
   ];
 }
