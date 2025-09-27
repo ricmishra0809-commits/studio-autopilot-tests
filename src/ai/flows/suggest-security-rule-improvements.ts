@@ -2,14 +2,9 @@
 
 /**
  * @fileOverview AI-powered suggestions for improving Firestore Security Rules.
- *
- * - suggestSecurityRuleImprovements - A function that suggests improvements to Firestore Security Rules.
- * - SuggestSecurityRuleImprovementsInput - The input type for the suggestSecurityRuleImprovements function.
- * - SuggestSecurityRuleImprovementsOutput - The return type for the suggestSecurityRuleImprovements function.
  */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { callOpenRouterWithJson } from '@/lib/openrouter';
+import { z } from 'zod';
 
 const SuggestSecurityRuleImprovementsInputSchema = z.object({
   securityRules: z
@@ -42,33 +37,23 @@ export type SuggestSecurityRuleImprovementsOutput = z.infer<
 export async function suggestSecurityRuleImprovements(
   input: SuggestSecurityRuleImprovementsInput
 ): Promise<SuggestSecurityRuleImprovementsOutput> {
-  return suggestSecurityRuleImprovementsFlow(input);
-}
-
-const prompt = ai.definePrompt({
-  name: 'suggestSecurityRuleImprovementsPrompt',
-  input: {schema: SuggestSecurityRuleImprovementsInputSchema},
-  output: {schema: SuggestSecurityRuleImprovementsOutputSchema},
-  prompt: `You are a security expert specializing in Firestore Security Rules.
+  const prompt = `You are a security expert specializing in Firestore Security Rules.
 
 You will review the provided Firestore Security Rules and Firestore schema and suggest improvements to enhance security.
 Explain why each suggested improvement is important.
 
 Firestore Schema:
-{{firestoreSchema}}
+${input.firestoreSchema}
 
 Firestore Security Rules:
-{{securityRules}}`,
-});
+${input.securityRules}
 
-const suggestSecurityRuleImprovementsFlow = ai.defineFlow(
-  {
-    name: 'suggestSecurityRuleImprovementsFlow',
-    inputSchema: SuggestSecurityRuleImprovementsInputSchema,
-    outputSchema: SuggestSecurityRuleImprovementsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+Return the output as a JSON object that strictly follows this Zod schema:
+${JSON.stringify(SuggestSecurityRuleImprovementsOutputSchema.shape)}
+`;
+
+    return callOpenRouterWithJson<SuggestSecurityRuleImprovementsOutput>({
+        model: 'xai/grok-4-fast',
+        messages: [{ role: 'user', content: prompt }]
+    });
+}

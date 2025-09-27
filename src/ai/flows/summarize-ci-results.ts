@@ -1,16 +1,10 @@
-// SummarizeCIResults Flow
 'use server';
 
 /**
- * @fileOverview A Genkit flow that summarizes CI test results using AI.
- *
- * - summarizeCIResults - A function that summarizes CI test results.
- * - SummarizeCIResultsInput - The input type for the summarizeCIResults function.
- * - SummarizeCIResultsOutput - The return type for the summarizeCIResults function.
+ * @fileOverview A flow that summarizes CI test results using AI.
  */
-
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { callOpenRouterWithJson } from '@/lib/openrouter';
+import { z } from 'zod';
 
 const SummarizeCIResultsInputSchema = z.object({
   testResults: z
@@ -29,30 +23,19 @@ const SummarizeCIResultsOutputSchema = z.object({
 export type SummarizeCIResultsOutput = z.infer<typeof SummarizeCIResultsOutputSchema>;
 
 export async function summarizeCIResults(input: SummarizeCIResultsInput): Promise<SummarizeCIResultsOutput> {
-  return summarizeCIResultsFlow(input);
-}
-
-const prompt = ai.definePrompt({
-  name: 'summarizeCIResultsPrompt',
-  input: {schema: SummarizeCIResultsInputSchema},
-  output: {schema: SummarizeCIResultsOutputSchema},
-  prompt: `You are an expert QA automation engineer and your goal is to summarize CI test results.
+  const prompt = `You are an expert QA automation engineer and your goal is to summarize CI test results.
 
   Given the following test results, provide a concise summary of the results, highlighting any failures, errors, or important observations. If there are failures, provide details on the cause and impact.
 
   Test Results:
-  {{testResults}}
-  `,
-});
+  ${input.testResults}
+  
+  Return the output as a JSON object that strictly follows this Zod schema:
+  ${JSON.stringify(SummarizeCIResultsOutputSchema.shape)}
+  `;
 
-const summarizeCIResultsFlow = ai.defineFlow(
-  {
-    name: 'summarizeCIResultsFlow',
-    inputSchema: SummarizeCIResultsInputSchema,
-    outputSchema: SummarizeCIResultsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+  return callOpenRouterWithJson<SummarizeCIResultsOutput>({
+    model: 'xai/grok-4-fast',
+    messages: [{ role: 'user', content: prompt }]
+  });
+}

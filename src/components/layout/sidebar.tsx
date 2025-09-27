@@ -77,11 +77,8 @@ export const navItems: NavSection[] = [
   {
     title: 'AI Tools',
     links: [
-      { href: '/ai-agent', label: 'AI Test Agent', icon: <Bot /> },
-      { href: '/visual-recorder', label: 'Visual Recorder', icon: <MousePointerClick /> },
       { href: '/summarize-ci', label: 'Summarize CI', icon: <ClipboardCheck /> },
       { href: '/security-rules', label: 'Security Rules', icon: <ShieldCheck /> },
-      { href: '/test-video', label: 'Test Video Gen', icon: <Video /> },
     ],
   },
   {

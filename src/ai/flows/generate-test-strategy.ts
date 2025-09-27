@@ -2,14 +2,10 @@
 
 /**
  * @fileOverview AI-powered test strategy generator for Firebase projects.
- *
- * - generateTestStrategy - A function that generates a comprehensive test strategy document.
- * - GenerateTestStrategyInput - The input type for the generateTestStrategy function.
- * - GenerateTestStrategyOutput - The return type for the generateTestStrategy function.
  */
 
-import {ai, openRouterModel} from '@/ai/genkit';
-import {z} from 'genkit';
+import { callOpenRouterWithJson } from '@/lib/openrouter';
+import { z } from 'genkit';
 
 const GenerateTestStrategyInputSchema = z.object({
   backendDetails: z
@@ -40,39 +36,27 @@ const GenerateTestStrategyOutputSchema = z.object({
 export type GenerateTestStrategyOutput = z.infer<typeof GenerateTestStrategyOutputSchema>;
 
 export async function generateTestStrategy(input: GenerateTestStrategyInput): Promise<GenerateTestStrategyOutput> {
-  return generateTestStrategyFlow(input);
-}
-
-const generateTestStrategyPrompt = ai.definePrompt({
-  name: 'generateTestStrategyPrompt',
-  input: {schema: GenerateTestStrategyInputSchema},
-  output: {schema: GenerateTestStrategyOutputSchema},
-  model: openRouterModel('xai/grok-4-fast'), // Default to a strong text model
-  prompt: `You are an expert QA Automation Engineer, Firebase Specialist, and No-Code Workflow Architect.
+    const prompt = `You are an expert QA Automation Engineer, Firebase Specialist, and No-Code Workflow Architect.
   Your task is to create a complete AI-powered software testing automation system for a Firebase Studio project.
 
   Based on the following project details, generate a comprehensive test strategy document:
 
   Project Details:
-  - Backend: {{{backendDetails}}}
-  - Tools: {{{tools}}}
-  - Goal: {{{goal}}}
+  - Backend: ${input.backendDetails}
+  - Tools: ${input.tools}
+  - Goal: ${input.goal}
 
   The test strategy document should cover the following:
   - Define unit, integration, E2E, API, and security rules tests for Firebase.
   - Explain coverage goals.
   - Mention frameworks and emulator usage.
-`,
-});
 
-const generateTestStrategyFlow = ai.defineFlow(
-  {
-    name: 'generateTestStrategyFlow',
-    inputSchema: GenerateTestStrategyInputSchema,
-    outputSchema: GenerateTestStrategyOutputSchema,
-  },
-  async input => {
-    const {output} = await generateTestStrategyPrompt(input);
-    return output!;
-  }
-);
+  Return the output as a JSON object that strictly follows this Zod schema:
+  ${JSON.stringify(GenerateTestStrategyOutputSchema.shape)}
+`;
+
+    return callOpenRouterWithJson<GenerateTestStrategyOutput>({
+        model: 'xai/grok-4-fast',
+        messages: [{ role: 'user', content: prompt }]
+    });
+}

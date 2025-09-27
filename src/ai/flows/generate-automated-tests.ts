@@ -2,14 +2,10 @@
 
 /**
  * @fileOverview An AI agent for generating automated test scripts for Firebase projects.
- *
- * - generateAutomatedTests - A function that generates test scripts based on project details.
- * - GenerateAutomatedTestsInput - The input type for the generateAutomatedTests function.
- * - GenerateAutomatedTestsOutput - The return type for the generateAutomatedTests function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { callOpenRouterWithJson } from '@/lib/openrouter';
+import { z } from 'zod';
 
 const GenerateAutomatedTestsInputSchema = z.object({
   projectDetails: z.string().describe('The full details of the project, including backend services, tools, schema, and function code. This can be a single block of text or a structured document.'),
@@ -25,14 +21,7 @@ const GenerateAutomatedTestsOutputSchema = z.object({
 export type GenerateAutomatedTestsOutput = z.infer<typeof GenerateAutomatedTestsOutputSchema>;
 
 export async function generateAutomatedTests(input: GenerateAutomatedTestsInput): Promise<GenerateAutomatedTestsOutput> {
-  return generateAutomatedTestsFlow(input);
-}
-
-const prompt = ai.definePrompt({
-  name: 'generateAutomatedTestsPrompt',
-  input: {schema: GenerateAutomatedTestsInputSchema},
-  output: {schema: GenerateAutomatedTestsOutputSchema},
-  prompt: `You are an expert QA Automation Engineer specializing in generating automated test scripts for Firebase projects.
+  const prompt = `You are an expert QA Automation Engineer specializing in generating automated test scripts for Firebase projects.
 
   Based on the provided Firebase project details below, analyze the information and generate comprehensive test scripts.
   The details might be unstructured. Your first task is to identify the backend services (like Firebase Auth, Firestore), the tools being used (like Playwright, Jest), the Firestore schema, and any relevant Firebase Functions code.
@@ -44,27 +33,15 @@ const prompt = ai.definePrompt({
   4.  API tests for any Cloud Function HTTP endpoints.
 
   Here are the project details:
-  {{{projectDetails}}}
+  ${input.projectDetails}
 
   Consider the best practices for each testing framework and provide well-structured and maintainable test scripts.
+  Return the output as a JSON object that strictly follows this Zod schema:
+  ${JSON.stringify(GenerateAutomatedTestsOutputSchema.shape)}
+  `;
 
-  Output the test scripts in a JSON format with the following structure:
-  {
-    "jestUnitTests": "...",
-    "firestoreSecurityRulesTests": "...",
-    "playwrightE2ETests": "...",
-    "apiTests": "..."
-  }`,
-});
-
-const generateAutomatedTestsFlow = ai.defineFlow(
-  {
-    name: 'generateAutomatedTestsFlow',
-    inputSchema: GenerateAutomatedTestsInputSchema,
-    outputSchema: GenerateAutomatedTestsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+  return callOpenRouterWithJson<GenerateAutomatedTestsOutput>({
+    model: 'xai/grok-4-fast',
+    messages: [{ role: 'user', content: prompt }],
+  });
+}
