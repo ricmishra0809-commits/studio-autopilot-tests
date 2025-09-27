@@ -22,6 +22,7 @@ export const ExploreAndTestAppOutputSchema = z.object({
       action: z.string().describe('The action taken by the agent.'),
       screenshot: z.string().describe('A base64 encoded screenshot of the page after the action. As a data URI.'),
       observation: z.string().describe('The agent\'s observation after the action.'),
+      codeSuggestion: z.string().nullable().optional().describe('A suggested code fix if an assertion failed.'),
     })
   ),
   video: z.string().optional().describe('A base64 encoded video of the test session. As a data URI.'),

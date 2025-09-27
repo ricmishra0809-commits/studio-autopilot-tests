@@ -22,10 +22,11 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { LoadingSpinner } from '@/components/shared/loading-spinner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Bot, Video } from 'lucide-react';
+import { Bot, Video, Wrench } from 'lucide-react';
 import type { ExploreAndTestAppOutput } from '@/ai/schemas/explore-and-test-app';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { CodeBlock } from '@/components/shared/code-block';
 
 const formSchema = z.object({
   url: z.string().url({ message: 'Please enter a valid URL.' }),
@@ -89,7 +90,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
     <div>
       <PageHeader
         title="AI Web Assistant"
-        description="Deploy an autonomous AI agent to perform tasks on your web application. Just give it a URL and a goal, and it will handle the rest."
+        description="Deploy an autonomous AI agent to perform tasks on your web application. It can test, self-heal, and even suggest code fixes."
       />
 
       <Card className="mb-8">
@@ -224,7 +225,13 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                   <CardTitle>Step {index + 1}: {step.observation}</CardTitle>
                   <p className="text-sm text-muted-foreground font-code">{step.action}</p>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                  {step.codeSuggestion && (
+                    <div>
+                        <h4 className="font-semibold text-md mb-2 flex items-center"><Wrench className="mr-2 h-4 w-4 text-primary" />AI Code Suggestion</h4>
+                        <CodeBlock code={step.codeSuggestion} language="jsx" />
+                    </div>
+                  )}
                   <Image
                     src={step.screenshot}
                     alt={`Screenshot of step ${index + 1}`}
