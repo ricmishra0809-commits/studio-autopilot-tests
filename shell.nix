@@ -1,21 +1,15 @@
+{ pkgs ? import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/3a149435017c68097063f25d77420e6c46649887.tar.gz") {} }:
 
-# This is a shell file that configures the development environment.
-# It's used by the `nix-shell` command.
-#
-# This file is NOT meant to be edited by hand, but is instead managed
-# by the Firebase team.
-
-{ pkgs ? import <nixos-unstable> {} }:
-
-let
-  playwright-deps = with pkgs; [
-    # Dependencies for Playwright, taken from apphosting.yaml
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    nodejs_20
+    # Playwright dependencies from apphosting.yaml
     glib
-    gobject-introspection
+    gobject-introspection # for libgio-2.0
     nspr
     nss
     dbus
-    gio
+    # libglib is covered by glib
     atk
     at-spi2-core
     expat
@@ -26,23 +20,17 @@ let
     xorg.libXext
     xorg.libXfixes
     xorg.libXrandr
-    libgbm
+    mesa # for libgbm
     xorg.libxcb
     libxkbcommon
-    udev
-    alsa-lib
+    udev # for libudev
+    alsa-lib # for libasound
     pango
     cairo
+    harfbuzz
   ];
-in pkgs.mkShell {
-  buildInputs = with pkgs; [
-    nodejs_20 # Node.js 20
-    # Add other dependencies here
-  ] ++ playwright-deps;
 
   shellHook = ''
-    # This is a workaround for a bug in the Nix sandbox that causes
-    # "npm" to not be found.
-    export PATH=$PATH:$PWD/node_modules/.bin
+    export PLAYWRIGHT_BROWSERS_PATH=$PWD/pw-browsers
   '';
 }
