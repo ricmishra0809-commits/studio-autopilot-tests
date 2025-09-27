@@ -23,6 +23,7 @@ import {
   Sun,
   TestTube,
   GitBranch,
+  FileQuestion,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -90,6 +91,7 @@ export const navItems: NavSection[] = [
       { href: '/docs', label: 'Runbook', icon: <BookOpenText /> },
       { href: '/technical-blueprint', label: 'Technical Blueprint', icon: <GitBranch /> },
       { href: '/api-test', label: 'API Test', icon: <TestTube /> },
+      { href: '/playwright-ci-guide', label: 'Playwright CI Guide', icon: <FileQuestion /> },
     ],
   },
 ];
