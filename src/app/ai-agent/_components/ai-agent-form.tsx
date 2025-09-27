@@ -88,8 +88,8 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
   return (
     <div>
       <PageHeader
-        title="AI Test Agent"
-        description="Deploy an autonomous AI agent to explore your web application and test its functionality based on a high-level task."
+        title="AI Web Assistant"
+        description="Deploy an autonomous AI agent to perform tasks on your web application. Just give it a URL and a goal, and it will handle the rest."
       />
 
       <Card className="mb-8">
@@ -107,7 +107,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                         <Input placeholder="https://yourapp.com" {...field} />
                       </FormControl>
                       <FormDescription>
-                        The starting URL for the AI agent to begin its exploration.
+                        The starting URL for the AI agent.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -134,7 +134,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
                         </SelectContent>
                       </Select>
                       <FormDescription>
-                        Test how your app looks and behaves on different devices.
+                        Emulate how your app behaves on different devices.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -182,7 +182,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
       {isLoading && (
         <div className="flex flex-col items-center justify-center p-8 text-center">
           <LoadingSpinner className="h-12 w-12" />
-          <p className="mt-4 text-lg text-muted-foreground">AI agent is exploring the application...</p>
+          <p className="mt-4 text-lg text-muted-foreground">AI agent is working on the task...</p>
           <p className="text-sm text-muted-foreground">This may take a few moments.</p>
         </div>
       )}
@@ -191,7 +191,7 @@ export function AIAgentForm({ runAgent, supportedDevices }: AiAgentFormProps) {
         <div className="space-y-8">
           <Card>
             <CardHeader>
-              <CardTitle>Testing Summary</CardTitle>
+              <CardTitle>Session Summary</CardTitle>
             </CardHeader>
             <CardContent className="prose prose-sm max-w-none text-muted-foreground">
               {result.summary.split('\n').map((line, i) => <p key={i}>{line}</p>)}

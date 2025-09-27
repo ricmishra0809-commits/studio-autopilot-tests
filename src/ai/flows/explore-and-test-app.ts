@@ -55,7 +55,7 @@ ${dom}`,
         description: 'Clicks on an element on the page, specified by a CSS selector.',
         inputSchema: z.object({
         selector: z.string().describe('The CSS selector of the element to click.'),
-        justification: z.string().describe('Why you are clicking this element.'),
+        justification: z.string().describe('Why you are clicking this element to progress the task.'),
         }),
         outputSchema: z.void(),
     },
@@ -71,7 +71,7 @@ ${dom}`,
         inputSchema: z.object({
         selector: z.string().describe('The CSS selector of the input field.'),
         value: z.string().describe('The value to fill in the field.'),
-        justification: z.string().describe('Why you are filling this field.'),
+        justification: z.string().describe('Why you are filling this field to progress the task.'),
         }),
         outputSchema: z.void(),
     },
@@ -83,7 +83,7 @@ ${dom}`,
     const assertElementTool = ai.defineTool(
     {
         name: 'assertElement',
-        description: 'Asserts that an element is visible on the page.',
+        description: 'Asserts that an element is visible on the page. Use this to verify a step was successful.',
         inputSchema: z.object({
         selector: z.string().describe('The CSS selector of the element to check.'),
         justification: z.string().describe('Why you are asserting this element is visible.'),
@@ -102,7 +102,7 @@ ${dom}`,
         description: 'Scrolls the page down to reveal more content.',
         inputSchema: z.object({
             direction: z.enum(['down', 'up']).describe('The direction to scroll.'),
-            justification: z.string().describe('Why you are scrolling.'),
+            justification: z.string().describe('Why you are scrolling the page.'),
         }),
         outputSchema: z.void(),
     },
@@ -114,7 +114,7 @@ ${dom}`,
     const pressKeyTool = ai.defineTool(
         {
             name: 'pressKey',
-            description: 'Presses a key on the keyboard, like "Enter".',
+            description: 'Presses a key on the keyboard, like "Enter". Useful for submitting forms.',
             inputSchema: z.object({
                 key: z.string().describe('The key to press (e.g., "Enter", "Tab").'),
                 selector: z.string().optional().describe('The CSS selector of an element to focus before pressing the key.'),
@@ -130,9 +130,9 @@ ${dom}`,
     const analyzeVisualsTool = ai.defineTool(
     {
         name: 'analyzeVisuals',
-        description: 'Analyzes the current page screenshot to answer questions about visual elements, layout, and style. Use this to check for visual bugs.',
+        description: 'Analyzes the current page screenshot to answer questions about visual elements, layout, and style. Use this to understand what is on the screen.',
         inputSchema: z.object({
-        query: z.string().describe('The question to ask about the screenshot (e.g., "Is the main title centered?", "Is there any overlapping text?").'),
+        query: z.string().describe('The question to ask about the screenshot (e.g., "Is there a login button?", "What is the main heading text?").'),
         justification: z.string().describe('Why you are analyzing the visuals.'),
         }),
         outputSchema: z.string().describe('The answer to your visual query.'),
@@ -153,15 +153,17 @@ ${dom}`,
     await playwrightService.goTo(input.url);
 
     let steps = [];
-    let cumulativePrompt = `You are an AI Test Agent with Self-Healing capabilities. Your goal is to test a web application by exploring it to complete a task.
-You can see the screen and interact with it using the provided tools. If a selector for an element is not working, you can use the 'findAlternativeSelector' tool to attempt to self-heal the test. You can also use the 'analyzeVisuals' tool to check for UI/UX issues.
+    let cumulativePrompt = `You are a powerful AI Web Assistant. Your goal is to complete a user-defined task on a web application.
+You operate like a human: you look at the screen, think, and then act. You have a set of tools to interact with the page (click, type, scroll, etc.).
+If one of your actions fails (e.g., a selector is invalid), you can use 'findAlternativeSelector' to try and self-heal.
 
-Your task is: ${input.task}
+Your mission is to complete the following task: ${input.task}
+
 The current URL is: ${input.url}
 The emulated device is: ${input.device || 'Desktop'}
 
-Analyze the screenshot and decide what action to take next to accomplish the task.
-Think step-by-step. What is the most logical next action? If a previous action failed, consider why and try to recover.
+Analyze the screenshot. Think step-by-step. What is the most logical next action to accomplish the task?
+If you believe you have completed the task, use the 'observe' action to finish the session with a final thought.
 `;
 
     for (let i = 0; i < 7; i++) { // Limit to 7 steps for now
@@ -170,7 +172,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
         const agentResponse = await ai.generate({
             prompt: [
                 { role: 'user', content: cumulativePrompt},
-                { role: 'user', content: { media: { url: screenshot } } },
+                { role: 'user', content: { media: { url:screenshot } } },
             ],
             tools: [clickTool, fillInFieldTool, assertElementTool, scrollTool, pressKeyTool, findAlternativeSelector, analyzeVisualsTool],
             model: 'google/gemini-flash-1.5',
@@ -185,7 +187,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
         } else if (action !== 'observe' && actionInput.justification) {
           observation = actionInput.justification;
         } else {
-            observation = 'The agent decided to finish the session.'
+            observation = 'The agent has completed the task and is finishing the session.'
         }
         
         let toolResult = '';
@@ -226,6 +228,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
         - Result: ${toolResult || 'No output.'}
         
         Now, analyze the new screenshot and decide the next action. If the previous step failed, consider using 'findAlternativeSelector' to self-heal.
+        Have you completed the task? If so, you can finish. Otherwise, continue to the next logical step.
         `;
     }
 
@@ -233,7 +236,7 @@ Think step-by-step. What is the most logical next action? If a previous action f
     const dom = await playwrightService.getPageContent();
     const video = await playwrightService.closeAndGetVideo();
 
-    const finalAnalysisPrompt = `Based on the following steps and observations, summarize the testing session for the task: "${input.task}".
+    const finalAnalysisPrompt = `Based on the following steps and observations, create a final summary for the user about how you completed the task: "${input.task}".
 
 Also, provide a brief "Performance and Security Insights" section.
 - For performance, analyze these metrics: ${JSON.stringify(performance)}. Was the page load fast?
