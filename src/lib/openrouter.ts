@@ -50,7 +50,7 @@ async function callOpenRouterApi(params: CallOpenRouterParams) {
 /**
  * Calls the OpenRouter API and returns the raw text response.
  */
-export async function callOpenRouter(params: CallOpen-RouterParams): Promise<string> {
+export async function callOpenRouter(params: CallOpenRouterParams): Promise<string> {
     const responseData = await callOpenRouterApi(params);
     return responseData.choices[0].message.content;
 }
